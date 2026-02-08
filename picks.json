@@ -1,0 +1,95 @@
+{
+  "as_of_date": "2026-02-05",
+  "first_probs_top10": [
+    {
+      "number": 30,
+      "prob": 0.1718695511420568
+    },
+    {
+      "number": 26,
+      "prob": 0.16583150128523508
+    },
+    {
+      "number": 29,
+      "prob": 0.16583150128523508
+    },
+    {
+      "number": 5,
+      "prob": 0.16356774171193442
+    },
+    {
+      "number": 3,
+      "prob": 0.16149895886580148
+    },
+    {
+      "number": 4,
+      "prob": 0.16149895886580148
+    },
+    {
+      "number": 16,
+      "prob": 0.16149895886580148
+    },
+    {
+      "number": 19,
+      "prob": 0.16149895886580148
+    },
+    {
+      "number": 21,
+      "prob": 0.16149895886580148
+    },
+    {
+      "number": 27,
+      "prob": 0.16149895886580148
+    }
+  ],
+  "pick_sets": [
+    {
+      "type": "top6_and_max_s2",
+      "first_zone": [
+        3,
+        4,
+        5,
+        26,
+        29,
+        30
+      ],
+      "second_zone": 3
+    },
+    {
+      "type": "weighted_sample_1",
+      "first_zone": [
+        2,
+        6,
+        15,
+        23,
+        28,
+        37
+      ],
+      "second_zone": 7
+    },
+    {
+      "type": "weighted_sample_2",
+      "first_zone": [
+        1,
+        9,
+        23,
+        27,
+        32,
+        37
+      ],
+      "second_zone": 3
+    },
+    {
+      "type": "weighted_sample_3",
+      "first_zone": [
+        5,
+        7,
+        12,
+        17,
+        21,
+        24
+      ],
+      "second_zone": 3
+    }
+  ]
+}

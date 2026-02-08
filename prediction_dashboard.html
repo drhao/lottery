@@ -1,0 +1,409 @@
+
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Super Lotto 638 ML Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --accent-primary: #6366f1;
+            --accent-secondary: #ec4899;
+            --accent-gold: #fbbf24;
+            --grid-color: #334155;
+        }
+        
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+        
+        .container { max-width: 1400px; margin: 0 auto; }
+        
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--grid-color);
+        }
+        
+        h1 { 
+            margin: 0; 
+            background: linear-gradient(to right, #60a5fa, #c084fc); 
+            -webkit-background-clip: text; 
+            -webkit-text-fill-color: transparent; 
+            font-size: 2rem;
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .card h2 {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            margin-top: 0;
+            border-bottom: 1px solid var(--grid-color);
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .metric-value { font-size: 1.8rem; font-weight: bold; color: var(--text-primary); }
+        .metric-label { font-size: 0.9rem; color: var(--text-secondary); }
+        
+        .ball {
+            display: inline-block;
+            width: 28px;
+            height: 28px;
+            line-height: 28px;
+            text-align: center;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            color: white;
+            font-weight: bold;
+            font-size: 0.8rem;
+            margin: 1px;
+            border: 2px solid transparent;
+        }
+        .ball.s2 { background: linear-gradient(135deg, #ef4444, #f97316); }
+        
+        /* Hit Highlights */
+        .ball.hit {
+            background: var(--accent-gold);
+            color: black;
+            box-shadow: 0 0 8px var(--accent-gold);
+        }
+        .ball.s2.hit {
+            background: #fff;
+            color: #ef4444;
+            border-color: #ef4444;
+            box-shadow: 0 0 8px #ef4444;
+        }
+
+        table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+        th, td { padding: 10px; text-align: left; border-bottom: 1px solid var(--grid-color); }
+        th { color: var(--text-secondary); white-space: nowrap; }
+        
+        .pick-set {
+            background: rgba(0,0,0,0.2);
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+        .pick-title { font-weight: bold; margin-bottom: 5px; color: var(--accent-primary); }
+
+        .high-hit-row { background: rgba(251, 191, 36, 0.1); }
+        
+        .stats-col { display: flex; flex-direction: column; gap: 4px; }
+        .model-name { font-size: 0.75rem; color: var(--text-secondary); }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🔮 Super Lotto 638 ML Prediction Dashboard</h1>
+            <p style="color: var(--text-secondary)">Reviewing Model Output (RF & XGBoost) + S2 Predictions</p>
+        </header>
+
+        <!-- Summary Metrics -->
+        <div class="grid">
+            <div class="card">
+                <h2>📊 Model Performance (Log Loss)</h2>
+                <div style="display: flex; justify-content: space-around;">
+                    <div>
+                        <div class="metric-value" id="rf-loss">-</div>
+                        <div class="metric-label">Random Forest (S1)</div>
+                    </div>
+                    <div>
+                        <div class="metric-value" id="xgb-loss">-</div>
+                        <div class="metric-label">XGBoost (S1)</div>
+                    </div>
+                </div>
+            </div>
+            
+             <div class="card">
+                <h2>🎯 High Performance (Games with 4+ Hits)</h2>
+                <div style="display: flex; justify-content: space-around;">
+                    <div>
+                        <div class="metric-value" id="count-4plus-rf">-</div>
+                        <div class="metric-label">RF (4+ Hits)</div>
+                    </div>
+                     <div>
+                        <div class="metric-value" id="count-4plus-xgb">-</div>
+                        <div class="metric-label">XGBoost (4+ Hits)</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Next Draw Predictions -->
+        <div class="grid">
+            <div class="card" style="grid-column: 1 / -1;">
+                <h2>🔮 Next Draw Recommendations (from picks.json)</h2>
+                <div id="picks-container" class="grid" style="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));">
+                    <!-- populated by JS -->
+                </div>
+            </div>
+        </div>
+        
+        <!-- Charts -->
+        <div class="grid">
+             <div class="card" style="grid-column: 1 / -1;">
+                <h2>📈 Top 6 Hit Rate (Moving Average) - Backtest History</h2>
+                <div style="height: 300px;">
+                    <canvas id="chart-hits"></canvas>
+                </div>
+            </div>
+        </div>
+        
+        <!-- High Hits Detailed List -->
+        <div class="card">
+            <h2>🏆 High Performance Games (S1Hits >= 4)</h2>
+            <div style="overflow-x: auto;">
+                <table id="high-hits-table">
+                     <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>True Numbers</th>
+                            <th>RF Pred (Hits)</th>
+                            <th>XGB Pred (Hits)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="high-hits-body"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Detailed Table -->
+         <div class="card">
+            <h2>📋 Recent Backtest Results</h2>
+            <div style="overflow-x: auto;">
+                <table id="results-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>True Numbers</th>
+                            <th>RF Pred (Hits)</th>
+                            <th>XGB Pred (Hits)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="results-body"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const PREDS = [{"t_idx": 1877, "draw_date": "2026-01-19", "true_first": [11, 17, 29, 30, 34, 35], "true_second": 6, "s1_rf_probs": [0.15817303, 0.15388188, 0.15638718, 0.15638718, 0.15862596, 0.15917505, 0.16082912, 0.15638718, 0.15499567, 0.1573892, 0.1649978, 0.15638718, 0.15638718, 0.15304747, 0.15638718, 0.15817303, 0.15638718, 0.15472431, 0.15678151, 0.1598271, 0.15638718, 0.15638718, 0.15677305, 0.15638718, 0.16082912, 0.15917505, 0.15483505, 0.15638718, 0.15638718, 0.16399578, 0.15638718, 0.15538414, 0.15499567, 0.15638718, 0.15304747, 0.15538414, 0.15862596, 0.15638718], "s1_rf_top6": [7, 11, 20, 25, 26, 30], "s1_xgb_probs": [0.16124615, 0.15121523, 0.15863436, 0.15261694, 0.15913546, 0.15913546, 0.15845835, 0.15886629, 0.15250796, 0.1529545, 0.16457885, 0.1558573, 0.15725434, 0.15776387, 0.15863436, 0.15913546, 0.15886629, 0.15704686, 0.15836519, 0.15882028, 0.15517418, 0.15913546, 0.15776387, 0.15517418, 0.16124615, 0.15913546, 0.15654576, 0.15567527, 0.15913546, 0.15776387, 0.15654576, 0.15636975, 0.15654707, 0.14717612, 0.15432609, 0.15913546, 0.15913546, 0.15726277], "s1_xgb_top6": [1, 5, 6, 11, 25, 29], "base_uniform_probs": [0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474], "base_uniform_top6": [10, 14, 15, 16, 17, 38], "base_freq_probs": [0.19, 0.14, 0.15, 0.11, 0.18, 0.17, 0.22, 0.18, 0.24, 0.08, 0.19, 0.17, 0.09, 0.19, 0.16, 0.2, 0.18, 0.19, 0.14, 0.27, 0.19, 0.13, 0.11, 0.15, 0.14, 0.15, 0.12, 0.11, 0.14, 0.07, 0.17, 0.17, 0.11, 0.15, 0.17, 0.15, 0.17, 0.16], "base_freq_top6": [7, 9, 11, 14, 16, 20], "base_ema_probs": [0.14847139, 0.01996346, 0.10233577, 0.04425374, 0.14608824, 0.13678132, 0.20562878, 0.19288072, 0.21011376, 0.21456864, 0.2292992, 0.08286518, 0.01783835, 0.25655448, 0.12175608, 0.31130136, 0.19913317, 0.10406617, 0.14485663, 0.21897771, 0.15301498, 0.14941435, 0.15540347, 0.03165596, 0.1953471, 0.23552414, 0.09123433, 0.12562668, 0.09189217, 0.01754574, 0.21642624, 0.22436175, 0.22146037, 0.24617911, 0.22783386, 0.0372019, 0.30043584, 0.17170787], "base_ema_top6": [11, 14, 16, 26, 34, 37], "s2_xgb_s2_probs": [0.01012267, 0.03997475, 0.14913662, 0.24557655, 0.17673413, 0.062011, 0.19798812, 0.11845621], "s2_xgb_s2_pred": 4, "base_uniform_s2_probs": [0.125, 0.125, 0.125, 0.125, 0.125, 0.125, 0.125, 0.125], "base_uniform_s2_pred": 1, "base_freq_s2_probs": "[0.08 0.19 0.12 0.17 0.14 0.11 0.09 0.1 ]", "base_freq_s2_pred": 2, "base_ema_s2_probs": [0.09038174, 0.10136273, 0.15980222, 0.10468347, 0.23538434, 0.11810562, 0.0735541, 0.11672578], "base_ema_s2_pred": 5}, {"t_idx": 1878, "draw_date": "2026-01-22", "true_first": [3, 8, 12, 26, 32, 38], "true_second": 4, "s1_rf_probs": [0.15903098, 0.15903098, 0.15046645, 0.1569796, 0.15592547, 0.15046645, 0.15783878, 0.15783878, 0.15903098, 0.15909168, 0.15903098, 0.15903098, 0.15165053, 0.15455816, 0.15647147, 0.15903098, 0.15592547, 0.15783878, 0.15618723, 0.16024135, 0.15783878, 0.15592547, 0.15165053, 0.15561229, 0.16320396, 0.1569796, 0.16461381, 0.15356384, 0.16250172, 0.15783878, 0.15647147, 0.15561229, 0.15783878, 0.15903098, 0.16435205, 0.15592547, 0.15455816, 0.16045327], "s1_rf_top6": [20, 25, 27, 29, 35, 38], "s1_xgb_probs": [0.15813589, 0.16114947, 0.15949613, 0.15864863, 0.16000887, 0.15864863, 0.16114947, 0.15993511, 0.16000887, 0.15692153, 0.1514613, 0.15166602, 0.15572025, 0.15690719, 0.15743427, 0.16063673, 0.15813589, 0.15701821, 0.15302626, 0.16318754, 0.15701821, 0.15813589, 0.14955454, 0.15864863, 0.15864863, 0.16114947, 0.16000887, 0.15692153, 0.15879451, 0.15741993, 0.15864863, 0.15861831, 0.16114947, 0.15743427, 0.15993511, 0.15649158, 0.15302626, 0.15864863], "s1_xgb_top6": [2, 7, 16, 20, 26, 33], "base_uniform_probs": [0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474], "base_uniform_top6": [10, 14, 15, 16, 17, 38], "base_freq_probs": [0.19, 0.14, 0.15, 0.11, 0.18, 0.16, 0.22, 0.18, 0.24, 0.08, 0.2, 0.17, 0.09, 0.19, 0.16, 0.2, 0.19, 0.18, 0.14, 0.27, 0.18, 0.13, 0.11, 0.15, 0.14, 0.15, 0.12, 0.11, 0.15, 0.08, 0.17, 0.16, 0.1, 0.16, 0.18, 0.15, 0.16, 0.16], "base_freq_top6": [7, 9, 11, 16, 17, 20], "base_ema_probs": [0.13433126, 0.01806218, 0.0925895, 0.0400391, 0.13217507, 0.12375452, 0.18604509, 0.17451112, 0.19010293, 0.19413353, 0.30269928, 0.07497326, 0.01613946, 0.23212072, 0.11016026, 0.28165361, 0.2754062, 0.09415511, 0.13106076, 0.19812269, 0.13844213, 0.13518441, 0.14060314, 0.0286411, 0.17674262, 0.21309327, 0.08254535, 0.11366223, 0.17837863, 0.11111281, 0.19581421, 0.20299396, 0.2003689, 0.31797158, 0.3013735, 0.03365886, 0.2718229, 0.15535474], "base_ema_top6": [11, 16, 17, 34, 35, 37], "s2_xgb_s2_probs": [0.00388715, 0.03653443, 0.04070789, 0.03659347, 0.02779408, 0.18115291, 0.64105105, 0.03227903], "s2_xgb_s2_pred": 7, "base_uniform_s2_probs": [0.125, 0.125, 0.125, 0.125, 0.125, 0.125, 0.125, 0.125], "base_uniform_s2_pred": 1, "base_freq_s2_probs": "[0.07 0.19 0.12 0.17 0.14 0.12 0.09 0.1 ]", "base_freq_s2_pred": 2, "base_ema_s2_probs": [0.08177396, 0.09170914, 0.14458296, 0.09471362, 0.21296678, 0.20209556, 0.06654895, 0.10560904], "base_ema_s2_pred": 5}, {"t_idx": 1879, "draw_date": "2026-01-26", "true_first": [5, 10, 15, 17, 23, 25], "true_second": 5, "s1_rf_probs": [0.16091911, 0.16376366, 0.15823334, 0.15024074, 0.15883771, 0.15883771, 0.16031474, 0.15609878, 0.15823334, 0.15795073, 0.15823334, 0.15734637, 0.14685446, 0.15734637, 0.15823334, 0.15628305, 0.16031474, 0.15795073, 0.15130406, 0.16031474, 0.16141634, 0.15823334, 0.15688742, 0.15734637, 0.15883771, 0.15600044, 0.15883771, 0.15883771, 0.15734637, 0.15883771, 0.15734637, 0.14935376, 0.16091911, 0.15795073, 0.15883771, 0.15734637, 0.15414436, 0.15414436], "s1_rf_top6": [1, 2, 17, 20, 21, 33], "s1_xgb_probs": "[0.15640153 0.15571631 0.15276223 0.15963403 0.16030736 0.16030736\n 0.15889582 0.15939103 0.15276223 0.1666369  0.15963403 0.15926858\n 0.15499    0.15472787 0.15627908 0.15926858 0.15572821 0.15853037\n 0.15963403 0.15415619 0.15963403 0.15499    0.15276223 0.15276223\n 0.15926858 0.15630261 0.16511111 0.15627908 0.15926858 0.15865282\n 0.15627908 0.15276223 0.1601849  0.15975648 0.15963403 0.15276223\n 0.15963403 0.14928781]", "s1_xgb_top6": [5, 6, 10, 27, 33, 34], "base_uniform_probs": [0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474], "base_uniform_top6": [10, 14, 15, 16, 17, 38], "base_freq_probs": [0.19, 0.14, 0.16, 0.11, 0.18, 0.15, 0.21, 0.18, 0.24, 0.08, 0.2, 0.18, 0.08, 0.18, 0.16, 0.2, 0.19, 0.18, 0.14, 0.27, 0.18, 0.13, 0.11, 0.14, 0.14, 0.16, 0.12, 0.11, 0.15, 0.08, 0.17, 0.17, 0.1, 0.16, 0.18, 0.15, 0.16, 0.17], "base_freq_top6": [1, 7, 9, 11, 16, 20], "base_ema_probs": [0.1215378, 0.01634197, 0.17900955, 0.03622585, 0.11958697, 0.11196838, 0.16832651, 0.25312911, 0.17199789, 0.17564462, 0.27387078, 0.16307104, 0.01460237, 0.21001399, 0.09966881, 0.25482946, 0.24917704, 0.08518795, 0.11857878, 0.17925387, 0.12525716, 0.12230971, 0.12721237, 0.02591338, 0.15990999, 0.28803677, 0.07468389, 0.10283726, 0.16139019, 0.10053064, 0.17716524, 0.2788993, 0.18128615, 0.28768857, 0.27267126, 0.03045325, 0.24593501, 0.23579715], "base_ema_top6": [11, 16, 26, 32, 34, 35], "s2_xgb_s2_probs": "[0.00631743 0.03854243 0.080454   0.30862978 0.03467026 0.4148878\n 0.03853714 0.07796121]", "s2_xgb_s2_pred": 6, "base_uniform_s2_probs": [0.125, 0.125, 0.125, 0.125, 0.125, 0.125, 0.125, 0.125], "base_uniform_s2_pred": 1, "base_freq_s2_probs": "[0.07 0.19 0.12 0.17 0.14 0.12 0.09 0.1 ]", "base_freq_s2_pred": 2, "base_ema_s2_probs": [0.07398596, 0.08297494, 0.13081315, 0.18093137, 0.19268423, 0.18284836, 0.06021096, 0.09555103], "base_ema_s2_pred": 5}, {"t_idx": 1880, "draw_date": "2026-01-29", "true_first": [1, 12, 14, 15, 27, 29], "true_second": 5, "s1_rf_probs": [0.15925186, 0.15783739, 0.14755655, 0.15541283, 0.15925186, 0.15988198, 0.15925186, 0.15175359, 0.15858697, 0.15588519, 0.16000143, 0.16496749, 0.15517428, 0.15866461, 0.1499444, 0.16000143, 0.1603645, 0.15858697, 0.15925186, 0.15858697, 0.15783739, 0.15603154, 0.15866461, 0.15517428, 0.15009786, 0.15175359, 0.16251803, 0.15568809, 0.16119171, 0.15722202, 0.14982495, 0.15541283, 0.15783739, 0.15988198, 0.15858697, 0.16119171, 0.16385486, 0.15541283], "s1_rf_top6": [12, 17, 27, 29, 36, 37], "s1_xgb_probs": [0.15284562, 0.1579752, 0.15695231, 0.16257934, 0.15228361, 0.16098654, 0.15585696, 0.15744976, 0.15228361, 0.15585696, 0.15741319, 0.15695231, 0.1503003, 0.15699162, 0.15585696, 0.16098654, 0.15699162, 0.1585451, 0.15695231, 0.15228361, 0.15585696, 0.15585696, 0.15956799, 0.15394096, 0.15553376, 0.15695231, 0.16257934, 0.15585696, 0.16159576, 0.15744976, 0.15642961, 0.15744976, 0.15585696, 0.15744976, 0.16257934, 0.16257934, 0.16257934, 0.15744976], "s1_xgb_top6": [4, 27, 29, 35, 36, 37], "base_uniform_probs": [0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474], "base_uniform_top6": [10, 14, 15, 16, 17, 38], "base_freq_probs": [0.19, 0.13, 0.15, 0.11, 0.19, 0.15, 0.21, 0.18, 0.24, 0.09, 0.19, 0.18, 0.08, 0.18, 0.17, 0.2, 0.2, 0.17, 0.14, 0.27, 0.18, 0.13, 0.12, 0.14, 0.15, 0.16, 0.12, 0.11, 0.15, 0.07, 0.17, 0.17, 0.1, 0.16, 0.18, 0.14, 0.16, 0.17], "base_freq_top6": [1, 7, 9, 16, 17, 20], "base_ema_probs": "[0.10996278 0.01478559 0.16196102 0.03277577 0.20343583 0.10130472\n 0.15229541 0.22902158 0.15561713 0.25415466 0.24778784 0.14754047\n 0.01321167 0.19001266 0.18541464 0.23055999 0.32068399 0.07707481\n 0.10728556 0.16218207 0.11332791 0.11066116 0.210335   0.02344544\n 0.23991856 0.2606047  0.06757114 0.09304323 0.14601969 0.09095629\n 0.16029236 0.25233746 0.1640208  0.26028966 0.24670257 0.02755294\n 0.22251262 0.21334028]", "base_ema_top6": [10, 11, 17, 26, 32, 34], "s2_xgb_s2_probs": "[0.07247938 0.03378304 0.2976282  0.30927095 0.02770524 0.09924623\n 0.05101632 0.1088706 ]", "s2_xgb_s2_pred": 4, "base_uniform_s2_probs": [0.125, 0.125, 0.125, 0.125, 0.125, 0.125, 0.125, 0.125], "base_uniform_s2_pred": 1, "base_freq_s2_probs": "[0.07 0.19 0.12 0.17 0.15 0.12 0.08 0.1 ]", "base_freq_s2_pred": 2, "base_ema_s2_probs": [0.06693968, 0.07507256, 0.11835476, 0.16369981, 0.26957145, 0.16543423, 0.05447658, 0.08645093], "base_ema_s2_pred": 5}, {"t_idx": 1881, "draw_date": "2026-02-02", "true_first": [7, 22, 28, 34, 36, 37], "true_second": 7, "s1_rf_probs": [0.15578991, 0.15578991, 0.15611076, 0.15578991, 0.15947522, 0.15195228, 0.15611076, 0.15578991, 0.15947522, 0.15578991, 0.15947522, 0.15578991, 0.15578991, 0.15947522, 0.16250965, 0.16526507, 0.15578991, 0.16526507, 0.15578991, 0.15947522, 0.15578991, 0.15578991, 0.15611076, 0.15578991, 0.15158309, 0.15578991, 0.15882433, 0.16218879, 0.15578991, 0.15974761, 0.15578991, 0.15611076, 0.15611076, 0.1596708, 0.15195228, 0.16250965, 0.1561632, 0.15578991], "s1_rf_top6": [15, 16, 18, 28, 30, 36], "s1_xgb_probs": [0.15780722, 0.15577054, 0.16066395, 0.16066395, 0.15577054, 0.15263788, 0.15862727, 0.16066395, 0.15577054, 0.15047359, 0.15111216, 0.15862727, 0.15175683, 0.15862727, 0.1536327, 0.16066395, 0.15577054, 0.16066395, 0.15780722, 0.15132564, 0.15780722, 0.15777268, 0.16066395, 0.15780722, 0.16066395, 0.15780722, 0.16066395, 0.15610674, 0.15652398, 0.16066395, 0.16066395, 0.15610674, 0.1544873, 0.15780722, 0.16066395, 0.15862727, 0.15577054, 0.16066395], "s1_xgb_top6": [16, 23, 25, 27, 31, 38], "base_uniform_probs": [0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474, 0.15789474], "base_uniform_top6": [10, 14, 15, 16, 17, 38], "base_freq_probs": [0.19, 0.13, 0.15, 0.11, 0.19, 0.15, 0.21, 0.18, 0.24, 0.09, 0.19, 0.19, 0.08, 0.19, 0.18, 0.2, 0.19, 0.17, 0.14, 0.27, 0.17, 0.13, 0.11, 0.14, 0.15, 0.16, 0.13, 0.11, 0.16, 0.07, 0.16, 0.17, 0.1, 0.15, 0.18, 0.14, 0.16, 0.17], "base_freq_top6": [1, 5, 7, 9, 16, 20], "base_ema_probs": "[0.19472823 0.01337744 0.14653616 0.02965427 0.18406099 0.09165665\n 0.13779109 0.20721    0.14079645 0.22994945 0.224189   0.22872709\n 0.01195341 0.26715431 0.26299419 0.20860189 0.29014265 0.06973436\n 0.09706789 0.14673616 0.10253477 0.100122   0.19030309 0.02121254\n 0.21706917 0.2357852  0.15637388 0.08418197 0.22735115 0.08229379\n 0.14502642 0.22830532 0.14839977 0.23550017 0.22320708 0.02492885\n 0.20132095 0.19302215]", "base_ema_top6": [10, 14, 15, 17, 26, 34], "s2_xgb_s2_probs": [0.15080555, 0.02310341, 0.14036334, 0.13700423, 0.1972662, 0.19797842, 0.1269692, 0.02650964], "s2_xgb_s2_pred": 6, "base_uniform_s2_probs": [0.125, 0.125, 0.125, 0.125, 0.125, 0.125, 0.125, 0.125], "base_uniform_s2_pred": 1, "base_freq_s2_probs": "[0.06 0.19 0.12 0.17 0.16 0.12 0.08 0.1 ]", "base_freq_s2_pred": 2, "base_ema_s2_probs": [0.06056447, 0.06792279, 0.10708288, 0.14810935, 0.33913607, 0.14967859, 0.04928833, 0.07821751], "base_ema_s2_pred": 5}];
+        const METRICS = {"base_uniform": {"log_loss": 0.4361623253853443, "brier_score": 0.13296398891966757, "mean_hits": 1.4, "s2_log_loss": 2.0794415416798357, "s2_accuracy": 0.0}, "base_ema": {"log_loss": 0.47210569941387276, "brier_score": 0.14183257464687435, "mean_hits": 0.6, "s2_log_loss": 2.0921531427626006, "s2_accuracy": 0.4}, "s1_xgb": {"log_loss": 0.4357696718268341, "brier_score": 0.13285611403280873, "mean_hits": 1.4}, "base_freq": {"log_loss": 0.44603991448470504, "brier_score": 0.13587052631578947, "mean_hits": 0.6, "s2_log_loss": 2.073638648137713, "s2_accuracy": 0.0}, "s1_rf": {"log_loss": 0.43491273503409034, "brier_score": 0.13262984934024266, "mean_hits": 1.8}, "s2_xgb": {"s2_log_loss": 3.020029319573355, "s2_accuracy": 0.0}};
+        const PICKS = {"as_of_date": "2026-02-05", "first_probs_top10": [{"number": 30, "prob": 0.1718695511420568}, {"number": 26, "prob": 0.16583150128523508}, {"number": 29, "prob": 0.16583150128523508}, {"number": 5, "prob": 0.16356774171193442}, {"number": 3, "prob": 0.16149895886580148}, {"number": 4, "prob": 0.16149895886580148}, {"number": 16, "prob": 0.16149895886580148}, {"number": 19, "prob": 0.16149895886580148}, {"number": 21, "prob": 0.16149895886580148}, {"number": 27, "prob": 0.16149895886580148}], "pick_sets": [{"type": "top6_and_max_s2", "first_zone": [3, 4, 5, 26, 29, 30], "second_zone": 3}, {"type": "weighted_sample_1", "first_zone": [2, 6, 15, 23, 28, 37], "second_zone": 7}, {"type": "weighted_sample_2", "first_zone": [1, 9, 23, 27, 32, 37], "second_zone": 3}, {"type": "weighted_sample_3", "first_zone": [5, 7, 12, 17, 21, 24], "second_zone": 3}]};
+
+        function calculateHitStats(preds, key_s1) {
+             let count4plus = 0;
+             let totalHits = 0;
+             preds.forEach(row => {
+                 let trueSet = new Set(row.true_first);
+                 let predSet = new Set(row[key_s1]);
+                 let hits = [...trueSet].filter(x => predSet.has(x)).length;
+                 if(hits >= 4) count4plus++;
+                 totalHits += hits;
+             });
+             return { count4plus, meanHits: totalHits / preds.length };
+        }
+
+        function renderMetrics() {
+             // Log Loss
+             if(METRICS.s1_rf) document.getElementById('rf-loss').textContent = METRICS.s1_rf.log_loss.toFixed(4);
+             if(METRICS.s1_xgb) document.getElementById('xgb-loss').textContent = METRICS.s1_xgb.log_loss.toFixed(4);
+             
+             // Count 4+ hits
+             const rfStats = calculateHitStats(PREDS, 's1_rf_top6');
+             const xgbStats = calculateHitStats(PREDS, 's1_xgb_top6');
+             
+             document.getElementById('count-4plus-rf').textContent = rfStats.count4plus;
+             document.getElementById('count-4plus-xgb').textContent = xgbStats.count4plus;
+        }
+
+        function renderPicks() {
+            const container = document.getElementById('picks-container');
+            if(!PICKS.pick_sets) return;
+            
+            PICKS.pick_sets.forEach(pset => {
+                const div = document.createElement('div');
+                div.className = 'pick-set';
+                let title = pset.type.replace(/_/g, ' ').toUpperCase();
+                
+                let ballsHtml = '';
+                pset.first_zone.forEach(n => {
+                    ballsHtml += `<span class="ball">${n}</span>`;
+                });
+                ballsHtml += `<span class="ball s2">${pset.second_zone}</span>`;
+                
+                div.innerHTML = `<div class="pick-title">${title}</div><div>${ballsHtml}</div>`;
+                container.appendChild(div);
+            });
+        }
+        
+        function createBall(num, type, isHit) {
+            return `<span class="ball ${type} ${isHit ? 'hit' : ''}">${num}</span>`;
+        }
+        
+        function renderRow(row, isHighHitView) {
+            let tr = document.createElement('tr');
+            
+            let trueSet = new Set(row.true_first);
+            let rfSet = new Set(row.s1_rf_top6);
+            let xgbSet = new Set(row.s1_xgb_top6);
+            
+            let rfHits = [...trueSet].filter(x => rfSet.has(x)).length;
+            let xgbHits = [...trueSet].filter(x => xgbSet.has(x)).length;
+
+            if (isHighHitView && rfHits < 4 && xgbHits < 4) return null;
+            
+            if (rfHits >= 4 || xgbHits >= 4) tr.className = 'high-hit-row';
+            
+            // True Numbers Ball HTML
+            let trueHtml = row.true_first.map(n => createBall(n, '', false)).join('') + 
+                           createBall(row.true_second, 's2', false);
+            
+            // RF HTML
+            let s2Pred = row.s2_xgb_s2_pred; // S2 prediction (shared or specific to XGB)
+            let s2Hit = (s2Pred === row.true_second);
+            
+            let rfHtml = row.s1_rf_top6.map(n => createBall(n, '', trueSet.has(n))).join('');
+            rfHtml += createBall(s2Pred, 's2', s2Hit); 
+            
+            // XGB HTML
+            let xgbHtml = row.s1_xgb_top6.map(n => createBall(n, '', trueSet.has(n))).join('');
+            xgbHtml += createBall(s2Pred, 's2', s2Hit);
+
+            let rfColor = rfHits >= 4 ? '#fbbf24' : (rfHits >= 3 ? '#6366f1' : 'inherit');
+            let xgbColor = xgbHits >= 4 ? '#fbbf24' : (xgbHits >= 3 ? '#ec4899' : 'inherit');
+
+            tr.innerHTML = `
+                <td>${row.draw_date}</td>
+                <td>${trueHtml}</td>
+                <td>
+                     <div class="stats-col">
+                        <div>${rfHtml}</div>
+                        <div class="model-name" style="color:${rfColor}">Hits: ${rfHits} ${s2Hit ? '+ S2' : ''}</div>
+                     </div>
+                </td>
+                <td>
+                    <div class="stats-col">
+                        <div>${xgbHtml}</div>
+                        <div class="model-name" style="color:${xgbColor}">Hits: ${xgbHits} ${s2Hit ? '+ S2' : ''}</div>
+                     </div>
+                </td>
+            `;
+            return tr;
+        }
+        
+        function renderTables() {
+            const highTbody = document.getElementById('high-hits-body');
+            const mainTbody = document.getElementById('results-body');
+            
+            // Render High Hits
+            const highHitsRows = PREDS.slice().reverse().map(r => renderRow(r, true)).filter(r => r !== null);
+            if(highHitsRows.length === 0) {
+                highTbody.innerHTML = '<tr><td colspan="4">No games with 4+ hits yet.</td></tr>';
+            } else {
+                highHitsRows.forEach(tr => highTbody.appendChild(tr));
+            }
+            
+            // Render Recent
+            const recentRows = PREDS.slice(-50).reverse().map(r => renderRow(r, false));
+            recentRows.forEach(tr => mainTbody.appendChild(tr));
+        }
+
+        function renderChart() {
+            const ctx = document.getElementById('chart-hits').getContext('2d');
+            const labels = PREDS.map(r => r.draw_date);
+            
+            // Calculate rolling hits for chart
+             const getHits = (row, key) => {
+                let t = new Set(row.true_first);
+                let p = new Set(row[key]);
+                return [...t].filter(x => p.has(x)).length;
+            };
+            
+            const rawHitsRF = PREDS.map(r => getHits(r, 's1_rf_top6'));
+            const rawHitsXGB = PREDS.map(r => getHits(r, 's1_xgb_top6'));
+            
+            // SMA Function with logic for small arrays
+            const sma = (arr, w) => {
+                if (arr.length < w) return arr; // Fallback for short predictions
+                let res = [];
+                for(let i=0; i<arr.length; i++) {
+                    if(i<w) res.push(null);
+                    else {
+                        let sum = 0;
+                        for(let j=0; j<w; j++) sum += arr[i-j];
+                        res.push(sum/w);
+                    }
+                }
+                return res;
+            };
+            
+            const windowSize = 5;
+            
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                     labels: labels,
+                     datasets: [
+                        {
+                            label: 'Random Forest (SMA 5)',
+                            data: sma(rawHitsRF, windowSize),
+                            borderColor: '#6366f1',
+                            tension: 0.3
+                        },
+                         {
+                            label: 'XGBoost (SMA 5)',
+                            data: sma(rawHitsXGB, windowSize),
+                            borderColor: '#ec4899',
+                            tension: 0.3
+                        }
+                     ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: { grid: { color: 'rgba(255,255,255,0.1)' } },
+                        x: { display: false }
+                    },
+                    interaction: { mode: 'index', intersect: false }
+                }
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            renderMetrics();
+            renderPicks();
+            renderTables();
+            renderChart();
+        });
+    </script>
+</body>
+</html>
+    

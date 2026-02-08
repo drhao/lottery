@@ -1,0 +1,37 @@
+{
+  "base_uniform": {
+    "log_loss": 0.4361623253853443,
+    "brier_score": 0.13296398891966757,
+    "mean_hits": 1.4,
+    "s2_log_loss": 2.0794415416798357,
+    "s2_accuracy": 0.0
+  },
+  "base_ema": {
+    "log_loss": 0.47210569941387276,
+    "brier_score": 0.14183257464687435,
+    "mean_hits": 0.6,
+    "s2_log_loss": 2.0921531427626006,
+    "s2_accuracy": 0.4
+  },
+  "s1_xgb": {
+    "log_loss": 0.4357696718268341,
+    "brier_score": 0.13285611403280873,
+    "mean_hits": 1.4
+  },
+  "base_freq": {
+    "log_loss": 0.44603991448470504,
+    "brier_score": 0.13587052631578947,
+    "mean_hits": 0.6,
+    "s2_log_loss": 2.073638648137713,
+    "s2_accuracy": 0.0
+  },
+  "s1_rf": {
+    "log_loss": 0.43491273503409034,
+    "brier_score": 0.13262984934024266,
+    "mean_hits": 1.8
+  },
+  "s2_xgb": {
+    "s2_log_loss": 3.020029319573355,
+    "s2_accuracy": 0.0
+  }
+}
