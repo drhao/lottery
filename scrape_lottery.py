@@ -31,10 +31,20 @@ def scrape_super_lotto_638():
         csv_file = "super_lotto638_results.csv"
         with open(csv_file, mode='w', newline='', encoding='utf-8') as file:
             writer = csv.writer(file)
-            writer.writerow(["Period", "Date", "Numbers", "Special_Number"])
+            writer.writerow(["Period", "Date", "Numbers", "Special_Number", "First_Prize_Total", "First_Prize_Per_Bet", "Second_Prize_Total", "Second_Prize_Per_Bet"])
 
             for item in results:
                 period = item.get("period")
+                # Extract prize info
+                first_prize_data = item.get("super638JackpotAssign", {})
+                second_prize_data = item.get("super638SecondAssign", {})
+                
+                first_prize_total = first_prize_data.get("prize", 0)
+                first_prize_per_bet = first_prize_data.get("perPrize", 0)
+                
+                second_prize_total = second_prize_data.get("prize", 0)
+                second_prize_per_bet = second_prize_data.get("perPrize", 0)
+
                 # Format date to YYYY-MM-DD
                 raw_date = item.get("lotteryDate")
                 if raw_date:
@@ -68,7 +78,7 @@ def scrape_super_lotto_638():
                     # Convert to string for CSV
                     numbers_str = " ".join(map(str, primary_numbers))
                     
-                    writer.writerow([period, formatted_date, numbers_str, special_number])
+                    writer.writerow([period, formatted_date, numbers_str, special_number, first_prize_total, first_prize_per_bet, second_prize_total, second_prize_per_bet])
                 else:
                     print(f"Warning: Unexpected number count for period {period}: {draw_numbers}")
 
