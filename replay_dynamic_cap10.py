@@ -8,7 +8,7 @@ print("Initializing Dynamic Lottery Replay (v3: Cap=10, 3k Sims, Dynamic Penalty
 # CONFIG
 # =====================
 CSV_PATH = "super_lotto638_results.csv"
-N_SIMS = 3000        # Changed to 3k sims as requested
+N_SIMS = 10000        # Changed to 10k sims as requested
 TEST_LEN = 1000       # Simulate 1000 draws per run
 TICKET_PRICE = 100    # Cost per ticket
 
@@ -88,9 +88,9 @@ second_draws = df["Special_Number"].astype(np.int16).to_numpy() - 1
 
 # Check jackpot winners for dynamic strategy
 try:
-    first_prize_won = (df["First_Prize_Per_Bet"].astype(str).str.replace(',', '').astype(float) > 0).to_numpy()
+    first_prize_won = (df["First_Prize_Per_Winner"].astype(str).str.replace(',', '').astype(float) > 0).to_numpy()
 except:
-    first_prize_won = (df["First_Prize_Per_Bet"] > 0).to_numpy()
+    first_prize_won = (df["First_Prize_Per_Winner"] > 0).to_numpy()
 
 T = len(df)
 if TEST_LEN >= T:
@@ -129,7 +129,7 @@ for s in range(N_SIMS):
         
     total_prize_real = 0
     hit_counter = {evt: 0 for evt in HIT_EVENTS}
-    
+    jackpot_hits_in_run = []
     current_n_tickets = INITIAL_TICKETS
     total_cost = 0
     max_drawdown = 0.0
@@ -180,6 +180,10 @@ for s in range(N_SIMS):
                 prize = PRIZE_FIXED[(m1, ms)]
             elif (m1, ms) == (6, 1): # Jackpot
                 prize = max(first_prize_total[i], 200000000)
+                jackpot_hits_in_run.append({
+                    "draw_idx": i,
+                    "period": df.iloc[start + i]["Period"]
+                })
             elif (m1, ms) == (6, 0): # Second Prize
                 prize = second_prize_total[i]
             
@@ -211,6 +215,7 @@ for s in range(N_SIMS):
         "total_prize_real": total_prize_real,
         "net_profit_real": total_prize_real - total_cost,
         "max_drawdown": max_drawdown,
+        "jackpot_hits": jackpot_hits_in_run,
         **{f"hit_{m1}_{ms}": hit_counter[(m1, ms)] for (m1, ms) in HIT_EVENTS}
     })
 
@@ -228,6 +233,21 @@ print(out["net_profit_real"].describe().apply(lambda x: format(x, 'f')))
 print("\n--- Max Drawdown (Risk) ---")
 print(out["max_drawdown"].describe().apply(lambda x: format(x, 'f')))
 
+# Analysis of Jackpot Timing
+all_jackpot_hits = []
+for r in records:
+    for hit in r["jackpot_hits"]:
+        all_jackpot_hits.append(hit["draw_idx"])
+
+if all_jackpot_hits:
+    print("\n--- Jackpot Timing Analysis ---")
+    print(f"Total Jackpots: {len(all_jackpot_hits)}")
+    print(f"Average hit at draw index: {np.mean(all_jackpot_hits):.1f}")
+    print(f"Hit indices: {sorted(all_jackpot_hits)}")
+    print("(Note: Index 0 is the start of the 1000-draw test period, 999 is the end)")
+else:
+    print("\nNo Jackpots hit in this simulation.")
+
 # Save
-out.to_csv("replay_result_v3_cap10_3k.csv", index=False)
-print("\nResults saved to replay_result_v3_cap10_3k.csv")
+out.to_csv("replay_result_v3_cap10_10k.csv", index=False)
+print("\nResults saved to replay_result_v3_cap10_10k.csv")

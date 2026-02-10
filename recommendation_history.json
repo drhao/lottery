@@ -1,0 +1,59 @@
+{
+    "2026-02-09": {
+        "jackpot": 1155300715.0,
+        "n_tickets": 10,
+        "strategy": "Dynamic Cap-10 + 2nd Zone Model",
+        "recommendations": [
+            {
+                "group": 1,
+                "numbers": "01 06 11 14 34 38",
+                "special": "08"
+            },
+            {
+                "group": 2,
+                "numbers": "03 08 09 10 12 20",
+                "special": "03"
+            },
+            {
+                "group": 3,
+                "numbers": "13 19 23 25 26 33",
+                "special": "06"
+            },
+            {
+                "group": 4,
+                "numbers": "04 09 16 32 33 36",
+                "special": "02"
+            },
+            {
+                "group": 5,
+                "numbers": "02 07 18 29 31 35",
+                "special": "04"
+            },
+            {
+                "group": 6,
+                "numbers": "17 21 22 27 28 30",
+                "special": "05"
+            },
+            {
+                "group": 7,
+                "numbers": "01 05 24 27 34 37",
+                "special": "06"
+            },
+            {
+                "group": 8,
+                "numbers": "03 12 15 17 21 29",
+                "special": "01"
+            },
+            {
+                "group": 9,
+                "numbers": "10 22 23 32 36 38",
+                "special": "02"
+            },
+            {
+                "group": 10,
+                "numbers": "05 23 25 28 34 35",
+                "special": "07"
+            }
+        ]
+    }
+}
