@@ -8,6 +8,7 @@ from numpy.random import default_rng
 CSV_PATH = "super_lotto638_results.csv"
 INITIAL_TICKETS = 2
 MAX_TICKETS = 10
+THRESHOLD = 800000000 # 8-亿門檻
 ALPHA = 100
 PENALTY_BASE = 0.4
 PENALTY_LARGE_BATCH = 0.2
@@ -80,17 +81,31 @@ for won in chronological_won:
     else:
         current_n_tickets = min(current_n_tickets + 1, MAX_TICKETS)
 
+# 3. Apply Threshold Strategy
+# If jackpot is below threshold, we should theoretically skip or play minimal (1).
+# Based on simulation, skipping is best EV, but for user experience we recommend 0 or 1.
+is_below_threshold = last_jackpot < THRESHOLD
+if is_below_threshold:
+    # Force ticket count to 0 (Recommend Skip) or 1 (Optional)
+    # Let's recommend 0 as primary advice to strictly follow strategy
+    recommended_tickets = 0
+else:
+    recommended_tickets = current_n_tickets
+
+# Generate play items anyway in case user wants to override
+play_n_tickets = max(1, recommended_tickets)
+
 # 3. Generate Recommendations
 rng = default_rng() 
 current_penalty = PENALTY_BASE if current_n_tickets < 5 else PENALTY_LARGE_BATCH
 
 # First Zone
 base_w = base_counts.astype(float) + ALPHA
-tickets = pick_soft_diverse(rng, base_w, current_n_tickets, current_penalty, k=6, total_nums=K1)
+tickets = pick_soft_diverse(rng, base_w, play_n_tickets, current_penalty, k=6, total_nums=K1)
 
 # Second Zone
 base_w_s = base_counts_s.astype(float) + ALPHA
-specials_picked = pick_soft_diverse(rng, base_w_s, current_n_tickets, current_penalty, k=1, total_nums=K2)
+specials_picked = pick_soft_diverse(rng, base_w_s, play_n_tickets, current_penalty, k=1, total_nums=K2)
 specials = [p[0] for p in specials_picked]
 
 # 4. Construct Output
@@ -104,7 +119,12 @@ output_lines.append(f"------------------------------------------")
 output_lines.append(f"使用策略: 動態 Cap-10 + 第二區熱度模型")
 output_lines.append(f"多樣性懲罰: {'增加強烈度 (0.2)' if current_n_tickets >= 5 else '基礎 (0.4)'}")
 output_lines.append(f"上次開獎結果: {'頭獎已開出！' if first_prize_won[0] else '連摃 (頭獎未開出)'}")
-output_lines.append(f"下期建議注數: {current_n_tickets} 注 (總金額 ${current_n_tickets * 100})")
+output_lines.append(f"策略門檻 (8億): {'⛔ 未達標' if is_below_threshold else '✅ 已達標 (火力全開)'}")
+if is_below_threshold:
+    output_lines.append(f"建議行動:     暫停投注 (目前獎金低於獲利門檻，建議省錢等待)")
+    output_lines.append(f"備註:         若手癢想買，下方提供 {play_n_tickets} 組參考號碼")
+else:
+    output_lines.append(f"下期建議注數: {recommended_tickets} 注 (總金額 ${recommended_tickets * 100})")
 output_lines.append(f"------------------------------------------")
 
 for i, pick in enumerate(tickets):
@@ -142,8 +162,9 @@ if os.path.exists(HISTORY_PATH):
 # Structure the data for this date
 current_record = {
     "jackpot": last_jackpot,
-    "n_tickets": current_n_tickets,
-    "strategy": "Dynamic Cap-10 + 2nd Zone Model",
+    "strategy": "Dynamic Cap-10 (800m Threshold)",
+    "threshold_met": not is_below_threshold,
+    "recommended_tickets": recommended_tickets,
     "recommendations": []
 }
 
