@@ -1,30 +1,28 @@
+# replay_dynamic_penalty.py
 import numpy as np
 import pandas as pd
 from numpy.random import default_rng
-
-print("Initializing Dynamic Lottery Replay (v3: Cap=10, 3k Sims, Dynamic Penalty, 2nd Zone Model)...")
 
 # =====================
 # CONFIG
 # =====================
 CSV_PATH = "super_lotto638_results.csv"
-N_SIMS = 3000        # Changed to 3k sims as requested
-TEST_LEN = 1000       # Simulate 1000 draws per run
-TICKET_PRICE = 100    # Cost per ticket
-
-# Dynamic Strategy Settings
+N_SIMS = 1000  # Reduced for faster experimentation
+TEST_LEN = 1000
+TICKET_PRICE = 100
 INITIAL_TICKETS = 2
-MAX_TICKETS = 10      # Cap at 10 tickets ($1000) per draw
-ALPHA = 100           # Hot number bias
-WINDOW_LEN = 0        # 0 = All history, >0 = Moving window
+MAX_TICKETS = 10
 
 # Dynamic Penalty Config
 PENALTY_BASE = 0.4
-PENALTY_LARGE_BATCH = 0.2  # Stronger diversity for larger batches (>= 5)
+# Experiment: If tickets > 5, use a different penalty.
+# LOWER value = STRONGER penalty (more diverse)
+# HIGHER value = WEAKER penalty (more concentrated)
+PENALTY_LARGE_BATCH = 0.2  # Let's try "more diverse" for >= 5 tickets
 
 K1, K2 = 38, 8
+ALPHA = 100
 
-# Fixed Prize Table (Small prizes)
 PRIZE_FIXED = {
     (5,1):150000, (5,0):20000,
     (4,1):4000,   (4,0):800,
@@ -33,7 +31,6 @@ PRIZE_FIXED = {
     (1,1):100
 }
 
-# Events to track
 HIT_EVENTS = [
     (6,1), (6,0),
     (5,1), (5,0),
@@ -67,18 +64,11 @@ def pick_soft_diverse(rng, base_w, n_tickets, penalty, k=6, total_nums=K1):
         used[pick] += 1
     return tickets
 
-def parse_currency(series):
-    try:
-        return series.astype(str).str.replace(',', '').astype(float).fillna(0).to_numpy()
-    except:
-        return series.fillna(0).to_numpy()
-
 # =====================
-# LOAD & PREP DATA
+# LOAD DATA
 # =====================
-print("Loading data...")
 df = pd.read_csv(CSV_PATH)
-# The CSV is New -> Old. We want Old -> New for proper sequential simulation.
+# The CSV has newest on top. Flip it to be chronological (oldest on top) for correct replay.
 df = df.iloc[::-1].reset_index(drop=True)
 
 first_draws = df["Numbers"].astype(str).str.split().apply(
@@ -86,22 +76,22 @@ first_draws = df["Numbers"].astype(str).str.split().apply(
 )
 second_draws = df["Special_Number"].astype(np.int16).to_numpy() - 1
 
-# Check jackpot winners for dynamic strategy
 try:
     first_prize_won = (df["First_Prize_Per_Bet"].astype(str).str.replace(',', '').astype(float) > 0).to_numpy()
 except:
     first_prize_won = (df["First_Prize_Per_Bet"] > 0).to_numpy()
 
 T = len(df)
-if TEST_LEN >= T:
-    raise ValueError("TEST_LEN must be < number of draws in CSV")
-
 start = T - TEST_LEN
 test_first = [first_draws.iloc[t] for t in range(start, T)]
 test_second = second_draws[start:T]
-full_first_prize_won = first_prize_won
 
-# Load prize pools
+def parse_currency(series):
+    try:
+        return series.astype(str).str.replace(',', '').astype(float).fillna(0).to_numpy()
+    except:
+        return series.fillna(0).to_numpy()
+
 first_prize_total = parse_currency(df["First_Prize_Total"])[start:T]
 second_prize_total = parse_currency(df["Second_Prize_Total"])[start:T]
 
@@ -109,7 +99,7 @@ masks = np.zeros((TEST_LEN, K1), dtype=bool)
 for i, arr in enumerate(test_first):
     masks[i, arr] = True
 
-# Warm-up counts (Base)
+# warm-up counts
 base_counts = np.zeros(K1, dtype=int)
 base_counts_s = np.zeros(K2, dtype=int)
 for t in range(start):
@@ -117,56 +107,38 @@ for t in range(start):
     base_counts_s[second_draws[t]] += 1
 
 # =====================
-# MAIN LOOP
+# MAIN REPLAY
 # =====================
-print(f"Starting simulation ({N_SIMS} runs)...")
-rng = default_rng(20260210)
+rng = default_rng(999999)
 records = []
+jackpot_hits_info = []
 
 for s in range(N_SIMS):
-    if (s+1) % 500 == 0:
-        print(f"  Run {s+1}/{N_SIMS}...")
-        
+    counts = base_counts.copy()
+    counts_s = base_counts_s.copy()
     total_prize_real = 0
     hit_counter = {evt: 0 for evt in HIT_EVENTS}
-    
     current_n_tickets = INITIAL_TICKETS
     total_cost = 0
-    max_drawdown = 0.0
-
-    # Initialize rolling counts
-    current_counts = base_counts.copy()
-    current_counts_s = base_counts_s.copy()
-    
-    # If windowed, handle appropriately
-    if WINDOW_LEN > 0:
-        current_counts = np.zeros(K1, dtype=int)
-        current_counts_s = np.zeros(K2, dtype=int)
-        history_start_idx = max(0, start - WINDOW_LEN)
-        for t in range(history_start_idx, start):
-            current_counts[first_draws.iloc[t]] += 1
-            current_counts_s[second_draws[t]] += 1
+    max_drawdown = 0
 
     for i in range(TEST_LEN):
-        # 0. Choose Penalty based on batch size
+        # Choose Penalty based on batch size
         current_penalty = PENALTY_BASE if current_n_tickets < 5 else PENALTY_LARGE_BATCH
 
-        # 1. Select Tickets (First Zone)
-        base_w = current_counts.astype(float) + ALPHA
+        # first-zone
+        base_w = counts.astype(float) + ALPHA
         tickets = pick_soft_diverse(rng, base_w, current_n_tickets, current_penalty, k=6, total_nums=K1)
         
-        # 2. Select Specials (Second Zone Model)
-        base_w_s = current_counts_s.astype(float) + ALPHA
+        # second-zone (Diversity approach)
+        base_w_s = counts_s.astype(float) + ALPHA
         specials_picked = pick_soft_diverse(rng, base_w_s, current_n_tickets, current_penalty, k=1, total_nums=K2)
         specials = [p[0] for p in specials_picked]
-        
-        # 3. Track Cost
-        total_cost += current_n_tickets * TICKET_PRICE
 
+        total_cost += current_n_tickets * TICKET_PRICE
         mask = masks[i]
         draw_s = int(test_second[i])
 
-        # 4. Check Hits
         for t_idx, pick in enumerate(tickets):
             m1 = int(mask[pick].sum())
             ms = int(specials[t_idx] == draw_s)
@@ -174,38 +146,37 @@ for s in range(N_SIMS):
             if (m1, ms) in hit_counter:
                 hit_counter[(m1, ms)] += 1
 
-            # Prize Logic
-            prize = 0
             if (m1, ms) in PRIZE_FIXED:
-                prize = PRIZE_FIXED[(m1, ms)]
+                total_prize_real += PRIZE_FIXED[(m1, ms)]
             elif (m1, ms) == (6, 1): # Jackpot
-                prize = max(first_prize_total[i], 200000000)
+                jackpot_amount = max(first_prize_total[i], 200000000)
+                total_prize_real += jackpot_amount 
+                # Record details
+                jackpot_hits_info.append({
+                    "sim_idx": s,
+                    "draw_idx_in_test": i,
+                    "global_idx": start + i,
+                    "period": df.iloc[start + i]["Period"],
+                    "date": df.iloc[start + i]["Date"],
+                    "amount": jackpot_amount
+                })
             elif (m1, ms) == (6, 0): # Second Prize
-                prize = second_prize_total[i]
-            
-            total_prize_real += prize
+                total_prize_real += second_prize_total[i]
 
-        # 5. Drawdown Tracking
-        current_net_profit = total_prize_real - total_cost
-        if current_net_profit < max_drawdown:
-            max_drawdown = current_net_profit
-
-        # 6. Dynamic Strategy Update for NEXT draw
+        # Determine tickets for NEXT draw
         global_idx = start + i
-        if full_first_prize_won[global_idx]:
+        if first_prize_won[global_idx]:
            current_n_tickets = INITIAL_TICKETS
         else:
            current_n_tickets = min(current_n_tickets + 1, MAX_TICKETS)
 
-        # 7. Update History (Rolling Window or Cumulative)
-        current_counts[test_first[i]] += 1
-        current_counts_s[test_second[i]] += 1
+        # update history
+        counts[test_first[i]] += 1
+        counts_s[test_second[i]] += 1
         
-        if WINDOW_LEN > 0:
-            remove_idx = (start + i) - WINDOW_LEN
-            if remove_idx >= 0:
-                current_counts[first_draws.iloc[remove_idx]] -= 1
-                current_counts_s[second_draws[remove_idx]] -= 1
+        current_net_profit = total_prize_real - total_cost
+        if current_net_profit < max_drawdown:
+            max_drawdown = current_net_profit
 
     records.append({
         "total_prize_real": total_prize_real,
@@ -215,19 +186,25 @@ for s in range(N_SIMS):
     })
 
 # =====================
-# ANALYSIS
+# OUTPUT
 # =====================
 out = pd.DataFrame(records)
-print("\n=== FINAL REPORT (v3: Dynamic Penalty + 2nd Zone Model) ===")
-print(f"Hit 6+1 (Jackpot) Count: {(out['hit_6_1'] > 0).sum()}")
-print(f"Hit 6+0 (2nd Prize) Count: {(out['hit_6_0'] > 0).sum()}")
+out.to_csv("replay_dynamic_penalty_result.csv", index=False)
 
-print("\n--- Net Profit Statistics ---")
-print(out["net_profit_real"].describe().apply(lambda x: format(x, 'f')))
+print(f"=== SUMMARY (Dynamic Penalty: <5:{PENALTY_BASE}, >=5:{PENALTY_LARGE_BATCH}) ===")
+print(out["net_profit_real"].describe())
 
-print("\n--- Max Drawdown (Risk) ---")
-print(out["max_drawdown"].describe().apply(lambda x: format(x, 'f')))
+print("\nMax Drawdown (Worst cumulative loss):")
+print(out["max_drawdown"].describe())
 
-# Save
-out.to_csv("replay_result_v3_cap10_3k.csv", index=False)
-print("\nResults saved to replay_result_v3_cap10_3k.csv")
+print("\nHit rates (mean per 1000 draws):")
+for evt in [(6,1),(6,0),(5,1),(5,0),(4,1),(4,0)]:
+    col = f"hit_{evt[0]}_{evt[1]}"
+    print(f"{col}: {out[col].mean():.3f}")
+
+if jackpot_hits_info:
+    print("\n=== JACKPOT HIT DETAILS ===")
+    for info in jackpot_hits_info:
+        print(f"Sim {info['sim_idx']}: Hit on Draw {info['draw_idx_in_test']} (Period {info['period']}, Date {info['date']}) - Amount: {info['amount']:,.0f}")
+else:
+    print("\nNo Jackpot hits recorded.")
