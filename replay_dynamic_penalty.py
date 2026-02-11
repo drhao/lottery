@@ -77,9 +77,9 @@ first_draws = df["Numbers"].astype(str).str.split().apply(
 second_draws = df["Special_Number"].astype(np.int16).to_numpy() - 1
 
 try:
-    first_prize_won = (df["First_Prize_Per_Bet"].astype(str).str.replace(',', '').astype(float) > 0).to_numpy()
+    first_prize_won = (df["First_Prize_Per_Winner"].astype(str).str.replace(',', '').astype(float) > 0).to_numpy()
 except:
-    first_prize_won = (df["First_Prize_Per_Bet"] > 0).to_numpy()
+    first_prize_won = (df["First_Prize_Per_Winner"] > 0).to_numpy()
 
 T = len(df)
 start = T - TEST_LEN

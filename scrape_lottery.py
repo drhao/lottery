@@ -31,7 +31,11 @@ def scrape_super_lotto_638():
         csv_file = "super_lotto638_results.csv"
         with open(csv_file, mode='w', newline='', encoding='utf-8') as file:
             writer = csv.writer(file)
-            writer.writerow(["Period", "Date", "Numbers", "Special_Number", "First_Prize_Total", "First_Prize_Per_Bet", "Second_Prize_Total", "Second_Prize_Per_Bet"])
+            writer.writerow([
+                "Period", "Date", "Numbers", "Special_Number", 
+                "First_Prize_Rollover", "First_Prize_Total", "First_Prize_Per_Winner", 
+                "Second_Prize_Rollover", "Second_Prize_Total", "Second_Prize_Per_Winner"
+            ])
 
             for item in results:
                 period = item.get("period")
@@ -39,11 +43,17 @@ def scrape_super_lotto_638():
                 first_prize_data = item.get("super638JackpotAssign", {})
                 second_prize_data = item.get("super638SecondAssign", {})
                 
-                first_prize_total = first_prize_data.get("prize", 0)
-                first_prize_per_bet = first_prize_data.get("perPrize", 0)
+                # First Prize
+                first_prize_last = first_prize_data.get("lastPrize", 0)
+                first_prize_current = first_prize_data.get("prize", 0)
+                first_prize_total = first_prize_last + first_prize_current
+                first_prize_per_winner = first_prize_data.get("perPrize", 0)
                 
-                second_prize_total = second_prize_data.get("prize", 0)
-                second_prize_per_bet = second_prize_data.get("perPrize", 0)
+                # Second Prize
+                second_prize_last = second_prize_data.get("lastPrize", 0)
+                second_prize_current = second_prize_data.get("prize", 0)
+                second_prize_total = second_prize_last + second_prize_current
+                second_prize_per_winner = second_prize_data.get("perPrize", 0)
 
                 # Format date to YYYY-MM-DD
                 raw_date = item.get("lotteryDate")
@@ -58,17 +68,6 @@ def scrape_super_lotto_638():
 
                 # The API returns 'drawNumberAppear' (draw order) and 'drawNumberSize' (sorted).
                 # Super Lotto 638 has 6 numbers in the first section + 1 number in the second section.
-                # In 'drawNumberAppear', it seems the last number is likely the second section number, 
-                # but 'drawNumberSize' might sort them all mixed together if it's just a raw sort.
-                # However, usually for these APIs, they separate them or we have to imply it.
-                # Let's inspect the 'drawNumberAppear' list. It usually contains 7 numbers.
-                # 6 from first section, 1 from second section.
-                
-                # Careful: The browser inspection said "second section number is the last element".
-                # Let's trust 'drawNumberAppear' for the second section number being the last one.
-                # And for the first section numbers, we can take the first 6 elements and sort them ourselves 
-                # to be consistent with how lotteries usually display results (sorted).
-                
                 draw_numbers = item.get("drawNumberAppear", [])
                 
                 if len(draw_numbers) >= 7:
@@ -78,7 +77,11 @@ def scrape_super_lotto_638():
                     # Convert to string for CSV
                     numbers_str = " ".join(map(str, primary_numbers))
                     
-                    writer.writerow([period, formatted_date, numbers_str, special_number, first_prize_total, first_prize_per_bet, second_prize_total, second_prize_per_bet])
+                    writer.writerow([
+                        period, formatted_date, numbers_str, special_number, 
+                        first_prize_last, first_prize_total, first_prize_per_winner,
+                        second_prize_last, second_prize_total, second_prize_per_winner
+                    ])
                 else:
                     print(f"Warning: Unexpected number count for period {period}: {draw_numbers}")
 

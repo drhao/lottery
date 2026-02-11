@@ -79,12 +79,12 @@ first_draws = df["Numbers"].astype(str).str.split().apply(
     lambda xs: np.array([int(x) for x in xs], dtype=np.int16) - 1
 )
 second_draws = df["Special_Number"].astype(np.int16).to_numpy() - 1
-# Check for jackpot winners (First_Prize_Per_Bet > 0 means won)
+# Check for jackpot winners (First_Prize_Per_Winner > 0 means won)
 # If column is string with commas, remove them first
 try:
-    first_prize_won = (df["First_Prize_Per_Bet"].astype(str).str.replace(',', '').astype(float) > 0).to_numpy()
+    first_prize_won = (df["First_Prize_Per_Winner"].astype(str).str.replace(',', '').astype(float) > 0).to_numpy()
 except:
-    first_prize_won = (df["First_Prize_Per_Bet"] > 0).to_numpy()
+    first_prize_won = (df["First_Prize_Per_Winner"] > 0).to_numpy()
 
 
 T = len(df)
@@ -111,8 +111,8 @@ def parse_currency(series):
 
 first_prize_total = parse_currency(df["First_Prize_Total"])[start:T]
 second_prize_total = parse_currency(df["Second_Prize_Total"])[start:T]
-first_prize_count = parse_currency(df["First_Prize_Per_Bet"])[start:T] > 0 # rough check if anyone won
-second_prize_count = parse_currency(df["Second_Prize_Per_Bet"])[start:T] > 0
+first_prize_count = parse_currency(df["First_Prize_Per_Winner"])[start:T] > 0 # rough check if anyone won
+second_prize_count = parse_currency(df["Second_Prize_Per_Winner"])[start:T] > 0
 
 # Original winners count is not directly available as integer, but we can estimate share.
 # For simplicity:
@@ -120,7 +120,7 @@ second_prize_count = parse_currency(df["Second_Prize_Per_Bet"])[start:T] > 0
 # If I hit jackpot and someone else did: I win Total / 2 (assuming 1 other winner for simplicity, or just take reported Per_Bet)
 # Let's use a logic:
 # My Prize = First_Prize_Total / (Original_Winners + 1)
-# Original_Winners = First_Prize_Total / First_Prize_Per_Bet (if Per_Bet > 0) else 0
+# Original_Winners = First_Prize_Total / First_Prize_Per_Winner (if Per_Winner > 0) else 0
 
 
 
