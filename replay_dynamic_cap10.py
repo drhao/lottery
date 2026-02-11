@@ -180,6 +180,7 @@ for s in range(N_SIMS):
                 prize = PRIZE_FIXED[(m1, ms)]
             elif (m1, ms) == (6, 1): # Jackpot
                 prize = max(first_prize_total[i], 200000000)
+                print(f"!!! JACKPOT HIT !!! Sim {s}, Draw {i} (Prize: {prize:,.0f})")
             elif (m1, ms) == (6, 0): # Second Prize
                 prize = second_prize_total[i]
             
