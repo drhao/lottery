@@ -7,53 +7,53 @@
         "recommendations": [
             {
                 "group": 1,
-                "numbers": "03 05 08 23 31 35",
-                "special": "04"
+                "numbers": "04 10 12 13 22 33",
+                "special": "07"
             },
             {
                 "group": 2,
-                "numbers": "04 12 17 19 21 33",
-                "special": "07"
+                "numbers": "14 16 19 25 27 30",
+                "special": "04"
             },
             {
                 "group": 3,
-                "numbers": "06 07 13 15 22 36",
-                "special": "06"
+                "numbers": "03 04 08 17 30 34",
+                "special": "05"
             },
             {
                 "group": 4,
-                "numbers": "01 02 11 18 27 29",
-                "special": "03"
+                "numbers": "07 26 29 31 37 38",
+                "special": "01"
             },
             {
                 "group": 5,
-                "numbers": "09 19 22 24 30 37",
-                "special": "08"
+                "numbers": "05 11 15 18 24 34",
+                "special": "06"
             },
             {
                 "group": 6,
-                "numbers": "09 10 16 25 26 34",
-                "special": "01"
+                "numbers": "01 03 06 21 28 36",
+                "special": "03"
             },
             {
                 "group": 7,
-                "numbers": "09 17 24 28 37 38",
-                "special": "07"
+                "numbers": "09 10 11 20 26 32",
+                "special": "08"
             },
             {
                 "group": 8,
-                "numbers": "12 20 32 33 35 36",
-                "special": "01"
+                "numbers": "02 23 27 29 31 38",
+                "special": "04"
             },
             {
                 "group": 9,
-                "numbers": "05 11 14 18 21 26",
+                "numbers": "07 13 14 16 35 37",
                 "special": "02"
             },
             {
                 "group": 10,
-                "numbers": "04 06 12 18 19 28",
-                "special": "05"
+                "numbers": "01 03 09 18 21 36",
+                "special": "07"
             }
         ]
     }

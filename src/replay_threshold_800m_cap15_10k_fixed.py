@@ -4,10 +4,10 @@ import numpy as np
 # =====================
 # CONFIG
 # =====================
-CSV_PATH = "super_lotto638_results.csv"
+CSV_PATH = "../data/super_lotto638_results.csv"
 TICKET_PRICE = 100
-MAX_TICKETS = 10
-N_SIMS = 10000        # 10k sims for robust stats
+MAX_TICKETS = 15      # <--- CHANGED TO 15
+N_SIMS = 10000        # 10k sims
 THRESHOLD = 800000000 # 8-亿門檻
 ALPHA = 100
 PENALTY_BASE = 0.4
@@ -17,10 +17,13 @@ K1, K2 = 38, 8
 def parse_currency(x):
     if isinstance(x, str):
         return float(x.replace(',', ''))
-    return float(x)
+    try:
+        return float(x)
+    except:
+        return 0.0
 
 def run_simulation():
-    print(f"Initializing 8-亿 Threshold Optimization Strategy (N_SIMS={N_SIMS})...")
+    print(f"Initializing 8-亿 Threshold Optimization Strategy (Cap-15, Logic Fixed, N_SIMS={N_SIMS})...")
     df = pd.read_csv(CSV_PATH)
     
     # Prepare data (Old -> New)
@@ -77,7 +80,7 @@ def run_simulation():
                 # Update counts even if we don't play to keep model relevant
                 counts1[first_draws[i]] += 1
                 counts2[second_draws[i]] += 1
-                current_n_tickets = 2
+                current_n_tickets = 2   # Reset momentum
                 continue
             
             # --- PLAY ---
@@ -149,7 +152,7 @@ if __name__ == "__main__":
     res_df = run_simulation()
     
     print("\n" + "="*50)
-    print(f"--- 8-亿門檻策略分析報告 (10,000次模擬) ---")
+    print(f"--- 8-亿門檻策略 (Cap-15) 分析報告 (10,000次模擬) ---")
     print("="*50)
     print(f"總獲利次數: {len(res_df[res_df['profit'] > 0])} ({len(res_df[res_df['profit'] > 0])/N_SIMS*100:.2f}%)")
     print(f"平均參與期數: {res_df['draws'].mean():.1f}")
@@ -159,7 +162,7 @@ if __name__ == "__main__":
     print(f"投資報酬率 (ROI): {(res_df['profit'].mean()/res_df['cost'].mean()*100):.2f}%")
     
     print("\n--- 大獎命中統計 ---")
-    print(f"頭獎 (6+1) 總次數: {res_df['h61'].sum()} (平均每萬輪擊中 {res_df['h61'].sum()} 次)")
+    print(f"頭獎 (6+1) 總次數: {res_df['h61'].sum()}")
     print(f"貳獎 (6+0) 總次數: {res_df['h60'].sum()}")
     print(f"參獎 (5+1) 總次數: {res_df['h51'].sum()}")
     
@@ -168,4 +171,4 @@ if __name__ == "__main__":
     print(f"單輪最高虧損: ${res_df['profit'].min():,.0f}")
     print("="*50)
     
-    res_df.to_csv("replay_result_threshold_800m_10k.csv", index=False)
+    res_df.to_csv("../output/replay_result_threshold_800m_cap15_10k_fixed.csv", index=False)

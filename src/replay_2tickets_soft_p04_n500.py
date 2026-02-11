@@ -6,7 +6,7 @@ from numpy.random import default_rng
 # =====================
 # CONFIG
 # =====================
-CSV_PATH = "super_lotto638_results.csv"   # 改成你的檔案路徑
+CSV_PATH = "../data/super_lotto638_results.csv"   # 改成你的檔案路徑
 N_SIMS = 2000
 TEST_LEN = 1000
 PENALTY = 0.4
@@ -260,7 +260,7 @@ for s in range(N_SIMS):
 # OUTPUT
 # =====================
 out = pd.DataFrame(records)
-out.to_csv("replay_result_n500.csv", index=False)
+out.to_csv("../output/replay_result_n500.csv", index=False)
 
 print("=== SUMMARY (Real Prizes with Jackpot) ===")
 print(out["total_prize_real"].describe())

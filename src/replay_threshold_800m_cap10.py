@@ -1,33 +1,39 @@
 import pandas as pd
 import numpy as np
 
+import os
+
 # =====================
 # CONFIG
 # =====================
-CSV_PATH = "super_lotto638_results.csv"
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+CSV_PATH = os.path.join(BASE_DIR, 'data', 'super_lotto638_results.csv')
 TICKET_PRICE = 100
-MAX_TICKETS = 15      # <--- CHANGED TO 15
-N_SIMS = 10000        # 10k sims
+MAX_TICKETS = 10      # Cap 10 strategies (Cap-10)
+N_SIMS = 10000        # 10,000 sims 
 THRESHOLD = 800000000 # 8-亿門檻
 ALPHA = 100
 PENALTY_BASE = 0.4
 PENALTY_LARGE = 0.2
 K1, K2 = 38, 8
 
+def sample_wor_es(rng, w, k=6):
+    """Efraimidis–Spirakis weighted sampling without replacement."""
+    u = rng.random(len(w))
+    keys = -np.log(u) / w
+    return np.argpartition(keys, k-1)[:k]
+
 def parse_currency(x):
     if isinstance(x, str):
         return float(x.replace(',', ''))
-    try:
-        return float(x)
-    except:
-        return 0.0
+    return float(x)
 
 def run_simulation():
-    print(f"Initializing 8-亿 Threshold Optimization Strategy (Cap-15, Logic Fixed, N_SIMS={N_SIMS})...")
+    print(f"Initializing 800M Threshold Optimization Strategy (Cap-10, N_SIMS={N_SIMS})...")
     df = pd.read_csv(CSV_PATH)
     
     # Prepare data (Old -> New)
-    df_chrono = df.iloc[::-1].copy()
+    df_chrono = df.iloc[::-1].copy().reset_index(drop=True)
     jp_totals = df_chrono['First_Prize_Total'].apply(parse_currency).values
     jp_per_winner = df_chrono['First_Prize_Per_Winner'].apply(parse_currency).values
     sect2_prizes = df_chrono['Second_Prize_Total'].apply(parse_currency).values
@@ -55,9 +61,12 @@ def run_simulation():
     }
 
     results = []
+    
+    # Track overall hits
+    total_hits = {key: 0 for key in [(6,1), (6,0), (5,1)]}
 
     for sim in range(N_SIMS):
-        if (sim + 1) % 1000 == 0:
+        if (sim + 1) % 500 == 0:
             print(f"  Progress: {sim+1}/{N_SIMS}...")
             
         rng = np.random.default_rng(sim)
@@ -67,29 +76,32 @@ def run_simulation():
         sim_prize = 0
         sim_draws_played = 0
         sim_hits = {key: 0 for key in [(6,1), (6,0), (5,1)]}
+        sim_max_drawdown = 0.0
         
-        # Reset counts for this simulation loop
         counts1 = init_counts1.copy()
         counts2 = init_counts2.copy()
+        
+        running_net_profit = 0
         
         for i in range(500, len(df_chrono)):
             current_jp = jp_totals[i]
             
             # --- THRESHOLD CHECK ---
             if current_jp < THRESHOLD:
-                # Update counts even if we don't play to keep model relevant
+                # Update counts but don't play
                 counts1[first_draws[i]] += 1
                 counts2[second_draws[i]] += 1
-                current_n_tickets = 2   # Reset momentum
+                current_n_tickets = 2 # Reset
                 continue
             
-            # --- PLAY ---
+            # Use Cap-10 Dynamic Strategy when >= 800M
             sim_draws_played += 1
             w1 = counts1.astype(float) + ALPHA
             w2 = counts2.astype(float) + ALPHA
             penalty = PENALTY_BASE if current_n_tickets < 5 else PENALTY_LARGE
             
-            sim_cost += current_n_tickets * TICKET_PRICE
+            cost_increase = current_n_tickets * TICKET_PRICE
+            sim_cost += cost_increase
             
             actual_m = set(first_draws[i])
             actual_s = second_draws[i]
@@ -97,41 +109,53 @@ def run_simulation():
             used1 = np.zeros(K1, dtype=int)
             used2 = np.zeros(K2, dtype=int)
             
+            sim_draw_prize_total = 0
+            
             for _ in range(current_n_tickets):
-                # Sample Main
                 cur_w1 = w1 * (penalty ** used1)
                 cur_w1 = np.clip(cur_w1, 1e-12, None)
-                pick1 = rng.choice(K1, size=6, replace=False, p=cur_w1/cur_w1.sum())
+                pick1 = sample_wor_es(rng, cur_w1, k=6)
                 used1[pick1] += 1
                 
-                # Sample Spec
                 cur_w2 = w2 * (penalty ** used2)
                 cur_w2 = np.clip(cur_w2, 1e-12, None)
-                pick_s = rng.choice(K2, size=1, p=cur_w2/cur_w2.sum())[0]
+                pick_s = sample_wor_es(rng, cur_w2, k=1)[0]
                 used2[pick_s] += 1
                 
-                # Check Prize
                 m1_hit = len(actual_m.intersection(set(pick1)))
                 m2_hit = 1 if pick_s == actual_s else 0
                 
+                prize = 0
                 if (m1_hit, m2_hit) == (6, 1):
-                    sim_prize += max(jp_totals[i], 200000000)
+                    win_amount = max(jp_totals[i], 200000000)
+                    prize = win_amount
                     sim_hits[(6,1)] += 1
+                    total_hits[(6,1)] += 1
+                    print(f"!!! JACKPOT HIT !!! Sim {sim}, Draw {i} (Prize: {win_amount:,.0f})")
                 elif (m1_hit, m2_hit) == (6, 0):
-                    sim_prize += sect2_prizes[i]
+                    prize = sect2_prizes[i]
                     sim_hits[(6,0)] += 1
+                    total_hits[(6,0)] += 1
                 elif (m1_hit, m2_hit) == (5, 1):
-                    sim_prize += PRIZE_FIXED[(5,1)]
+                    prize = PRIZE_FIXED[(5,1)]
                     sim_hits[(5,1)] += 1
+                    total_hits[(5,1)] += 1
                 else:
-                    sim_prize += PRIZE_FIXED.get((m1_hit, m2_hit), 0)
+                    prize = PRIZE_FIXED.get((m1_hit, m2_hit), 0)
+                
+                sim_draw_prize_total += prize
             
-            # Update counts for next draw
+            sim_prize += sim_draw_prize_total
+            running_net_profit += sim_draw_prize_total - cost_increase
+            if running_net_profit < sim_max_drawdown:
+                sim_max_drawdown = running_net_profit
+            
+            # Update history
             counts1[first_draws[i]] += 1
             counts2[second_draws[i]] += 1
             
-            # Update dynamic ticket count
-            if jp_per_winner[i] > 0:
+            # Dynamic Next Tickets logic
+            if jp_per_winner[i] > 0: # Jackpot won
                 current_n_tickets = 2
             else:
                 current_n_tickets = min(current_n_tickets + 1, MAX_TICKETS)
@@ -141,34 +165,44 @@ def run_simulation():
             "prize": sim_prize,
             "profit": sim_prize - sim_cost,
             "draws": sim_draws_played,
+            "max_drawdown": sim_max_drawdown,
             "h61": sim_hits[(6,1)],
             "h60": sim_hits[(6,0)],
             "h51": sim_hits[(5,1)]
         })
         
-    return pd.DataFrame(results)
+    return pd.DataFrame(results), total_hits
 
 if __name__ == "__main__":
-    res_df = run_simulation()
+    res_df, total_hits = run_simulation()
     
     print("\n" + "="*50)
-    print(f"--- 8-亿門檻策略 (Cap-15) 分析報告 (10,000次模擬) ---")
+    print(f"--- 800M Threshold Strategy (Cap-10) Analysis Report (10,000 Sims) ---")
     print("="*50)
-    print(f"總獲利次數: {len(res_df[res_df['profit'] > 0])} ({len(res_df[res_df['profit'] > 0])/N_SIMS*100:.2f}%)")
-    print(f"平均參與期數: {res_df['draws'].mean():.1f}")
-    print(f"平均投入成本: ${res_df['cost'].mean():,.0f}")
-    print(f"平均淨利 (EV): ${res_df['profit'].mean():,.0f}")
-    print(f"淨利中位數: ${res_df['profit'].median():,.0f}")
-    print(f"投資報酬率 (ROI): {(res_df['profit'].mean()/res_df['cost'].mean()*100):.2f}%")
+    participating_sims = res_df[res_df['draws'] > 0]
+    n_participating = len(participating_sims)
     
-    print("\n--- 大獎命中統計 ---")
-    print(f"頭獎 (6+1) 總次數: {res_df['h61'].sum()}")
-    print(f"貳獎 (6+0) 總次數: {res_df['h60'].sum()}")
-    print(f"參獎 (5+1) 總次數: {res_df['h51'].sum()}")
+    if n_participating == 0:
+        print("No simulations participated (Jackpot never reached 800M or threshold too high).")
+    else:
+        print(f"總獲利次數: {len(res_df[res_df['profit'] > 0])} ({len(res_df[res_df['profit'] > 0])/N_SIMS*100:.2f}%)")
+        print(f"平均參與期數: {res_df['draws'].mean():.1f} (Draws Played)")
+        print(f"平均投入成本: ${res_df['cost'].mean():,.0f}")
+        print(f"平均淨利 (EV): ${res_df['profit'].mean():,.0f}")
+        print(f"淨利中位數: ${res_df['profit'].median():,.0f}")
+        roi = (res_df['profit'].sum() / res_df['cost'].sum() * 100) if res_df['cost'].sum() > 0 else 0
+        print(f"投資報酬率 (ROI): {roi:.2f}%")
+        print(f"平均最大回撤 (Drawdown): ${res_df['max_drawdown'].mean():,.0f}")
+        
+        print("\n--- Hit Stats (Total) ---")
+        print(f"Jackpot (6+1): {total_hits[(6,1)]}")
+        print(f"2nd Prize (6+0): {total_hits[(6,0)]}")
+        print(f"3rd Prize (5+1): {total_hits[(5,1)]}")
+        
+        print("\n--- Extremes ---")
+        print(f"Max Profit: ${res_df['profit'].max():,.0f}")
+        print(f"Max Loss: ${res_df['profit'].min():,.0f}")
+        print("="*50)
     
-    print("\n--- 極端值分析 ---")
-    print(f"單輪最高獲利: ${res_df['profit'].max():,.0f}")
-    print(f"單輪最高虧損: ${res_df['profit'].min():,.0f}")
-    print("="*50)
-    
-    res_df.to_csv("replay_result_threshold_800m_cap15_10k_fixed.csv", index=False)
+    out_path = os.path.join(BASE_DIR, 'output', "replay_result_threshold_800m_cap10_10k.csv")
+    res_df.to_csv(out_path, index=False)

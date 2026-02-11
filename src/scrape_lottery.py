@@ -22,13 +22,17 @@ def scrape_super_lotto_638():
         if "content" not in data or "superLotto638Res" not in data["content"]:
             print("Error: Unexpected API response format.")
             return
+            
+        import os
+        BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        csv_file = os.path.join(BASE_DIR, 'data', 'super_lotto638_results.csv')
 
         results = data["content"]["superLotto638Res"]
         total_size = data["content"]["totalSize"]
         print(f"Total records found: {total_size}")
         print(f"Records fetched: {len(results)}")
 
-        csv_file = "super_lotto638_results.csv"
+        # csv_file is defined above
         with open(csv_file, mode='w', newline='', encoding='utf-8') as file:
             writer = csv.writer(file)
             writer.writerow([

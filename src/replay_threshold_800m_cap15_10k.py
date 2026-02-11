@@ -4,10 +4,10 @@ import numpy as np
 # =====================
 # CONFIG
 # =====================
-CSV_PATH = "super_lotto638_results.csv"
+CSV_PATH = "../data/super_lotto638_results.csv"
 TICKET_PRICE = 100
-MAX_TICKETS = 15      # Cap-15
-N_SIMS = 10000        # 10k sims
+MAX_TICKETS = 15      # 上限 15 注
+N_SIMS = 10000        # 10,000 sims 
 THRESHOLD = 800000000 # 8-亿門檻
 ALPHA = 100
 PENALTY_BASE = 0.4
@@ -17,10 +17,7 @@ K1, K2 = 38, 8
 def parse_currency(x):
     if isinstance(x, str):
         return float(x.replace(',', ''))
-    try:
-        return float(x)
-    except:
-        return 0.0
+    return float(x)
 
 def run_simulation():
     print(f"Initializing 8-亿 Threshold Optimization Strategy (Cap-15, N_SIMS={N_SIMS})...")
@@ -76,7 +73,6 @@ def run_simulation():
             
             # --- THRESHOLD CHECK ---
             if current_jp < THRESHOLD:
-                # Still update counts to keep model accurate
                 counts1[first_draws[i]] += 1
                 counts2[second_draws[i]] += 1
                 current_n_tickets = 2
@@ -96,22 +92,16 @@ def run_simulation():
             used2 = np.zeros(K2, dtype=int)
             
             for _ in range(current_n_tickets):
-                # Sample Main
                 cur_w1 = w1 * (penalty ** used1)
                 cur_w1 = np.clip(cur_w1, 1e-12, None)
-                # Ensure probabilities sum to 1
-                p1 = cur_w1/cur_w1.sum()
-                pick1 = rng.choice(K1, size=6, replace=False, p=p1)
+                pick1 = rng.choice(K1, size=6, replace=False, p=cur_w1/cur_w1.sum())
                 used1[pick1] += 1
                 
-                # Sample Spec
                 cur_w2 = w2 * (penalty ** used2)
                 cur_w2 = np.clip(cur_w2, 1e-12, None)
-                p2 = cur_w2/cur_w2.sum()
-                pick_s = rng.choice(K2, size=1, p=p2)[0]
+                pick_s = rng.choice(K2, size=1, p=cur_w2/cur_w2.sum())[0]
                 used2[pick_s] += 1
                 
-                # Check Prize
                 m1_hit = len(actual_m.intersection(set(pick1)))
                 m2_hit = 1 if pick_s == actual_s else 0
                 
@@ -127,11 +117,9 @@ def run_simulation():
                 else:
                     sim_prize += PRIZE_FIXED.get((m1_hit, m2_hit), 0)
             
-            # Update history counts
             counts1[first_draws[i]] += 1
             counts2[second_draws[i]] += 1
             
-            # Update dynamic ticket count
             if jp_per_winner[i] > 0:
                 current_n_tickets = 2
             else:
@@ -172,4 +160,4 @@ if __name__ == "__main__":
     print(f"單輪最高虧損: ${res_df['profit'].min():,.0f}")
     print("="*50)
     
-    res_df.to_csv("replay_result_threshold_800m_cap15_10k_fixed.csv", index=False)
+    res_df.to_csv("../output/replay_result_threshold_800m_cap15_10k.csv", index=False)

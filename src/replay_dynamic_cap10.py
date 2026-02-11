@@ -4,10 +4,13 @@ from numpy.random import default_rng
 
 print("Initializing Dynamic Lottery Replay (v3: Cap=10, 3k Sims, Dynamic Penalty, 2nd Zone Model)...")
 
+import os
+
 # =====================
 # CONFIG
 # =====================
-CSV_PATH = "super_lotto638_results.csv"
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+CSV_PATH = os.path.join(BASE_DIR, 'data', 'super_lotto638_results.csv')
 N_SIMS = 10000        # Changed to 10k sims as requested
 TEST_LEN = 1000       # Simulate 1000 draws per run
 TICKET_PRICE = 100    # Cost per ticket
@@ -180,14 +183,11 @@ for s in range(N_SIMS):
                 prize = PRIZE_FIXED[(m1, ms)]
             elif (m1, ms) == (6, 1): # Jackpot
                 prize = max(first_prize_total[i], 200000000)
-<<<<<<< HEAD
                 print(f"!!! JACKPOT HIT !!! Sim {s}, Draw {i} (Prize: {prize:,.0f})")
-=======
                 jackpot_hits_in_run.append({
                     "draw_idx": i,
-                    "period": df.iloc[start + i]["Period"]
+                    # "period": df.iloc[start + i]["Period"] # df might not have Period if not reset index properly or parsed
                 })
->>>>>>> 0e682bfce4e42f101db6f04ab2cc0282510c5d0e
             elif (m1, ms) == (6, 0): # Second Prize
                 prize = second_prize_total[i]
             
@@ -253,5 +253,6 @@ else:
     print("\nNo Jackpots hit in this simulation.")
 
 # Save
-out.to_csv("replay_result_v3_cap10_10k.csv", index=False)
-print("\nResults saved to replay_result_v3_cap10_10k.csv")
+out_path = os.path.join(BASE_DIR, 'output', 'replay_result_v3_cap10_10k.csv')
+out.to_csv(out_path, index=False)
+print(f"\nResults saved to {out_path}")

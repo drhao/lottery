@@ -6,7 +6,7 @@ from numpy.random import default_rng
 # =====================
 # CONFIG
 # =====================
-CSV_PATH = "super_lotto638_results.csv"
+CSV_PATH = "../data/super_lotto638_results.csv"
 N_SIMS = 1000  # Reduced for faster experimentation
 TEST_LEN = 1000
 TICKET_PRICE = 100
@@ -189,7 +189,7 @@ for s in range(N_SIMS):
 # OUTPUT
 # =====================
 out = pd.DataFrame(records)
-out.to_csv("replay_dynamic_penalty_result.csv", index=False)
+out.to_csv("../output/replay_dynamic_penalty_result.csv", index=False)
 
 print(f"=== SUMMARY (Dynamic Penalty: <5:{PENALTY_BASE}, >=5:{PENALTY_LARGE_BATCH}) ===")
 print(out["net_profit_real"].describe())

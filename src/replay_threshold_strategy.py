@@ -4,7 +4,7 @@ import numpy as np
 # =====================
 # CONFIG
 # =====================
-CSV_PATH = "super_lotto638_results.csv"
+CSV_PATH = "../data/super_lotto638_results.csv"
 TICKET_PRICE = 100
 MAX_TICKETS = 10
 N_SIMS = 1000  # Fewer sims for quick analysis of timing

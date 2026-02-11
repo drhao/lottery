@@ -2,10 +2,13 @@ import numpy as np
 import pandas as pd
 from numpy.random import default_rng
 
+import os
+
 # =====================
 # CONFIG
 # =====================
-CSV_PATH = "super_lotto638_results.csv"
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+CSV_PATH = os.path.join(BASE_DIR, 'data', 'super_lotto638_results.csv')
 INITIAL_TICKETS = 2
 MAX_TICKETS = 10
 THRESHOLD = 800000000 # 8-亿門檻
@@ -71,15 +74,23 @@ try:
 except:
     first_prize_won = (df["First_Prize_Per_Winner"] > 0).to_numpy()
 
-# BUG FIX: CSV is New -> Old, but strategy logic needs Old -> New
-chronological_won = first_prize_won[::-1]
+# BUG FIX: CSV is New -> Old, so Index 0 is the Latest Draw
+# To calculate current ticket count, we need to know how many consecutive losses since last win
+# working backwards from latest (Index 0)
 
 current_n_tickets = INITIAL_TICKETS
-for won in chronological_won:
+# Iterate through recent history to find last win
+consecutive_losses = 0
+for won in first_prize_won: # starts from latest
     if won:
-        current_n_tickets = INITIAL_TICKETS
-    else:
-        current_n_tickets = min(current_n_tickets + 1, MAX_TICKETS)
+        break # Found the last jackpot reset
+    consecutive_losses += 1
+
+# Cap consecutive losses to determine ticket level
+# 0 losses = Initial (2)
+# 1 loss = 3
+# ...
+current_n_tickets = min(INITIAL_TICKETS + consecutive_losses, MAX_TICKETS)
 
 # 3. Apply Threshold Strategy
 # If jackpot is below threshold, we should theoretically skip or play minimal (1).
@@ -119,6 +130,7 @@ output_lines.append(f"------------------------------------------")
 output_lines.append(f"使用策略: 動態 Cap-10 + 第二區熱度模型")
 output_lines.append(f"多樣性懲罰: {'增加強烈度 (0.2)' if current_n_tickets >= 5 else '基礎 (0.4)'}")
 output_lines.append(f"上次開獎結果: {'頭獎已開出！' if first_prize_won[0] else '連摃 (頭獎未開出)'}")
+output_lines.append(f"目前連摃期數: {consecutive_losses} 期")
 output_lines.append(f"策略門檻 (8億): {'⛔ 未達標' if is_below_threshold else '✅ 已達標 (火力全開)'}")
 if is_below_threshold:
     output_lines.append(f"建議行動:     暫停投注 (目前獎金低於獲利門檻，建議省錢等待)")

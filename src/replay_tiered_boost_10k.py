@@ -4,7 +4,7 @@ import numpy as np
 # =====================
 # CONFIG
 # =====================
-CSV_PATH = "super_lotto638_results.csv"
+CSV_PATH = "../data/super_lotto638_results.csv"
 TICKET_PRICE = 100
 MAX_TICKETS = 15      # 超頻上限
 N_SIMS = 10000        # 10,000 sims 
@@ -192,4 +192,4 @@ if __name__ == "__main__":
     print(f"單輪最高虧損: ${res_df['profit'].min():,.0f}")
     print("="*50)
     
-    res_df.to_csv("replay_result_tiered_boost_10k.csv", index=False)
+    res_df.to_csv("../output/replay_result_tiered_boost_10k.csv", index=False)
