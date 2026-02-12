@@ -119,33 +119,33 @@ def main():
     output_lines.append("==========================================")
     output_lines.append("       大樂透 (Lotto 6/49) 投注建議       ")
     output_lines.append("==========================================")
+    
+    output_lines.append("[ 當期資訊 ]")
     output_lines.append(f"最新開獎日期:   {last_date}")
     output_lines.append(f"預估下期頭獎:   ${effective_jackpot:,.0f} (累積/保底)")
     output_lines.append(f"當前連槓期數:   {consecutive_rollovers} 期")
-    output_lines.append(f"本期建議注數:   {recommended_tickets} 注")
-    output_lines.append("------------------------------------------")
-    output_lines.append("使用策略: 混合策略 (Ensemble)")
-    output_lines.append("1. 動能 (Recent Hot 100) - 追熱門")
-    output_lines.append("2. 反轉 (All-Time Cold) - 抓冷門")
-    output_lines.append("------------------------------------------")
-    output_lines.append("【建議組合 A: 追熱門 (Momentum)】")
-    # Generate enough sets? We generate 3 hardcoded, but user might need more if tickets > 6.
-    # The user instruction was "Base: 1 Hot + 1 Cold". 
-    # But if recommended is e.g. 5 tickets, we should probably output enough sets or tell them how to split.
-    # For now, just showing the count is what was asked. The 3 sets are "Reference".
+    output_lines.append("")
+    
+    output_lines.append("[ 投注策略建議 ] (Base 2 + 連槓成長)")
+    output_lines.append(f"★ 本期建議注數: {recommended_tickets} 注")
+    n_hot_rec = recommended_tickets // 2 + (recommended_tickets % 2)
+    n_cold_rec = recommended_tickets // 2
+    output_lines.append(f"★ 資金分配建議: {n_hot_rec} 注熱門 + {n_cold_rec} 注冷門")
+    output_lines.append("-" * 42)
+    
+    output_lines.append(f"【 A組: 追熱門 (Momentum) 】 建議買 {n_hot_rec} 注")
+    output_lines.append("   (策略: Recent Hot 100)")
     for i, nums in enumerate(hot_sets):
         nums_str = " ".join([f"{n:02d}" for n in nums])
-        output_lines.append(f"第 {i+1:02d} 組: [{nums_str}]")
+        output_lines.append(f"   第 {i+1:02d} 組: [{nums_str}]")
         
-    output_lines.append("------------------------------------------")
-    output_lines.append("【建議組合 B: 抓冷門 (Contrarian)】")
+    output_lines.append("")
+    output_lines.append(f"【 B組: 抓冷門 (Contrarian) 】 建議買 {n_cold_rec} 注")
+    output_lines.append("   (策略: All-Time Cold)")
     for i, nums in enumerate(cold_sets):
         nums_str = " ".join([f"{n:02d}" for n in nums])
-        output_lines.append(f"第 {i+1:02d} 組: [{nums_str}]")
+        output_lines.append(f"   第 {i+1:02d} 組: [{nums_str}]")
         
-    output_lines.append("==========================================")
-    output_lines.append(f"資金管理建議: Base 2, Cap 15 (目前建議 {recommended_tickets} 注)")
-    output_lines.append(f"- 分配: 建議 {recommended_tickets // 2 + (recommended_tickets % 2)} 注熱門 + {recommended_tickets // 2} 注冷門")
     output_lines.append("==========================================")
     output_lines.append("祝您中大獎！")
 
