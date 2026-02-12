@@ -1,0 +1,26 @@
+{
+    "2026-02-10": {
+        "jackpot_est": 53698687.0,
+        "strategy": "Dynamic Cap-10 (150m Threshold)",
+        "threshold_met": false,
+        "recommended_tickets": 0,
+        "recommendations": [
+            {
+                "group": 1,
+                "numbers": "23 24 26 30 32 45"
+            },
+            {
+                "group": 2,
+                "numbers": "05 07 13 20 22 25"
+            },
+            {
+                "group": 3,
+                "numbers": "01 08 10 17 37 45"
+            },
+            {
+                "group": 4,
+                "numbers": "07 14 15 33 40 43"
+            }
+        ]
+    }
+}
