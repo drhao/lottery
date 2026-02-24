@@ -74,5 +74,44 @@
                 "special": "07"
             }
         ]
+    },
+    "2026-02-16": {
+        "jackpot": 38606509.0,
+        "strategy": "Dynamic Cap-10 (800m Threshold)",
+        "threshold_met": false,
+        "recommended_tickets": 0,
+        "recommendations": [
+            {
+                "group": 1,
+                "numbers": "13 24 30 31 33 37",
+                "special": "06"
+            }
+        ]
+    },
+    "2026-02-19": {
+        "jackpot": 76193126.0,
+        "strategy": "Dynamic Cap-10 (800m Threshold)",
+        "threshold_met": false,
+        "recommended_tickets": 0,
+        "recommendations": [
+            {
+                "group": 1,
+                "numbers": "09 12 16 23 25 37",
+                "special": "05"
+            }
+        ]
+    },
+    "2026-02-23": {
+        "jackpot": 113050914.0,
+        "strategy": "Dynamic Cap-10 (800m Threshold)",
+        "threshold_met": false,
+        "recommended_tickets": 0,
+        "recommendations": [
+            {
+                "group": 1,
+                "numbers": "07 15 20 22 25 34",
+                "special": "01"
+            }
+        ]
     }
 }
