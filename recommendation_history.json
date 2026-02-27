@@ -113,5 +113,18 @@
                 "special": "01"
             }
         ]
+    },
+    "2026-02-26": {
+        "jackpot": 137895789.0,
+        "strategy": "Dynamic Cap-10 (800m Threshold)",
+        "threshold_met": false,
+        "recommended_tickets": 0,
+        "recommendations": [
+            {
+                "group": 1,
+                "numbers": "02 05 12 20 21 38",
+                "special": "01"
+            }
+        ]
     }
 }
