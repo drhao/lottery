@@ -1,0 +1,40 @@
+name: Auto Update Lottery Recommendations
+
+on:
+  schedule:
+    # 每天 UTC 15:00 執行 (台灣時間 23:00)
+    - cron: '0 15 * * *'
+  workflow_dispatch: # 允許手動觸發
+
+permissions:
+  contents: write # 允許將更新的 CSV 與推薦檔 push 回 repository
+
+jobs:
+  update-lottery:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+          cache: 'pip'
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+
+      - name: Run Auto Update Script
+        run: |
+          python src/auto_update_recommendation.py
+
+      - name: Commit and Push changes
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "🤖 Auto-update: 最新開獎結果與推薦號碼"
+          file_pattern: data/*.csv recommendation_*.json recommendation_*.txt
+          branch: main
