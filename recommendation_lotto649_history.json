@@ -22,5 +22,30 @@
                 "numbers": "07 14 15 33 40 43"
             }
         ]
+    },
+    "2026-04-21": {
+        "jackpot": 220705904.0,
+        "consecutive_rollovers": 0,
+        "recommended_tickets": 2,
+        "hot_sets": [
+            [
+                19,
+                27,
+                28,
+                33,
+                34,
+                38
+            ]
+        ],
+        "cold_sets": [
+            [
+                18,
+                20,
+                24,
+                34,
+                37,
+                38
+            ]
+        ]
     }
 }
