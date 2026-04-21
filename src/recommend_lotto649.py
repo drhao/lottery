@@ -155,5 +155,28 @@ def main():
         f.write(final_text)
     print(f"結果已儲存至 '{os.path.basename(TXT_OUTPUT_PATH)}'")
 
+    # Save to JSON History
+    import json
+    history_path = os.path.join(BASE_DIR, 'recommendation_lotto649_history.json')
+    history = {}
+    if os.path.exists(history_path):
+        try:
+            with open(history_path, 'r', encoding='utf-8') as f:
+                history = json.load(f)
+        except:
+            pass
+            
+    history[last_date] = {
+        "jackpot": effective_jackpot,
+        "consecutive_rollovers": int(consecutive_rollovers),
+        "recommended_tickets": int(recommended_tickets),
+        "hot_sets": [[int(n) for n in s] for s in hot_sets],
+        "cold_sets": [[int(n) for n in s] for s in cold_sets]
+    }
+    
+    with open(history_path, 'w', encoding='utf-8') as f:
+        json.dump(history, f, indent=4, ensure_ascii=False)
+    print(f"結果已儲存至 'recommendation_lotto649_history.json'")
+
 if __name__ == "__main__":
     main()
