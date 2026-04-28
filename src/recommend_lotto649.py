@@ -88,26 +88,27 @@ def main():
     
     # 3. Generate Recommendations (Base 2)
     # ---------------------------
-    # We generate 2 sets: One Hot, One Cold.
-    # User can scale up (e.g. 2 Hot, 2 Cold) effectively by manually picking more if they want,
-    # but the script will output 6 sets (3 Hot, 3 Cold) to give them choice.
+    # We dynamically generate the required number of sets based on recommendations.
     
     rng = default_rng()
+    
+    n_hot_rec = recommended_tickets // 2 + (recommended_tickets % 2)
+    n_cold_rec = recommended_tickets // 2
     
     hot_sets = []
     cold_sets = []
     
-    # Generate 3 Hot
+    # Generate Hot Sets
     used = np.zeros(K1, dtype=int)
-    for _ in range(3):
+    for _ in range(max(1, n_hot_rec)): # At least 1 for display if recommended is 0? Actually minimum recommended is 2.
         w = w_hot * (PENALTY ** used)
         pick = sample_wor_es(rng, w, k=6)
         # used[pick] += 1 # Diversity within set
         hot_sets.append(sorted(pick + 1))
         
-    # Generate 3 Cold
+    # Generate Cold Sets
     used = np.zeros(K1, dtype=int)
-    for _ in range(3):
+    for _ in range(n_cold_rec):
         w = w_cold * (PENALTY ** used) # Penalty still applies to avoid duplicates
         pick = sample_wor_es(rng, w, k=6)
         # used[pick] += 1
@@ -128,8 +129,6 @@ def main():
     
     output_lines.append("[ 投注策略建議 ] (Base 2 + 連槓成長)")
     output_lines.append(f"★ 本期建議注數: {recommended_tickets} 注")
-    n_hot_rec = recommended_tickets // 2 + (recommended_tickets % 2)
-    n_cold_rec = recommended_tickets // 2
     output_lines.append(f"★ 資金分配建議: {n_hot_rec} 注熱門 + {n_cold_rec} 注冷門")
     output_lines.append("-" * 42)
     
@@ -155,6 +154,29 @@ def main():
     with open(TXT_OUTPUT_PATH, "w", encoding='utf-8') as f:
         f.write(final_text)
     print(f"結果已儲存至 '{os.path.basename(TXT_OUTPUT_PATH)}'")
+
+    # Save to JSON History
+    import json
+    history_path = os.path.join(BASE_DIR, 'recommendation_lotto649_history.json')
+    history = {}
+    if os.path.exists(history_path):
+        try:
+            with open(history_path, 'r', encoding='utf-8') as f:
+                history = json.load(f)
+        except:
+            pass
+            
+    history[last_date] = {
+        "jackpot": effective_jackpot,
+        "consecutive_rollovers": int(consecutive_rollovers),
+        "recommended_tickets": int(recommended_tickets),
+        "hot_sets": [[int(n) for n in s] for s in hot_sets],
+        "cold_sets": [[int(n) for n in s] for s in cold_sets]
+    }
+    
+    with open(history_path, 'w', encoding='utf-8') as f:
+        json.dump(history, f, indent=4, ensure_ascii=False)
+    print(f"結果已儲存至 'recommendation_lotto649_history.json'")
 
 if __name__ == "__main__":
     main()

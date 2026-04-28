@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI 幸運號碼預測系統 | Lottery Optimizer</title>
+    <meta name="description" content="自動更新的大樂透與威力彩投注建議系統">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&family=Outfit:wght@300;500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+        <header>
+            <div class="title-wrapper">
+                <h1 class="glow-text">Lotto<span class="highlight">Predict</span>.ai</h1>
+                <div class="live-indicator">
+                    <span class="pulsing-dot"></span> AUTO-UPDATED
+                </div>
+            </div>
+            <p class="subtitle">基於歷史數據與機率模型的動態投注建議 (GitHub Pages 同步更新)</p>
+        </header>
+
+        <main>
+            <div class="tabs">
+                <button class="tab-btn active" data-target="lotto649">
+                    <span class="tab-icon">🎲</span> 大樂透 (6/49)
+                </button>
+                <button class="tab-btn" data-target="superlotto">
+                    <span class="tab-icon">🔥</span> 威力彩 (Super Lotto)
+                </button>
+            </div>
+
+            <section id="lotto649" class="tab-content active">
+                <div class="dashboard" id="lotto649-dashboard">
+                    <div class="loading-spinner"></div>
+                </div>
+            </section>
+
+            <section id="superlotto" class="tab-content">
+                <div class="dashboard" id="superlotto-dashboard">
+                    <div class="loading-spinner"></div>
+                </div>
+            </section>
+        </main>
+        
+        <footer>
+            <div class="disclaimer">
+                <span class="warning-icon">⚠️</span>
+                <p>投注建議僅供參考，本系統不保證中獎機率。請謹慎理財，量力而為。</p>
+            </div>
+            <p class="copyright">&copy; 2026 Lottery Optimizer. Hosted on GitHub Pages.</p>
+        </footer>
+    </div>
+    <script src="app.js"></script>
+</body>
+</html>
