@@ -398,3 +398,71 @@ footer {
         font-size: 0.8rem;
     }
 }
+
+/* Backtest */
+.bt-note {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+}
+
+.stat-value.negative {
+    color: var(--danger);
+}
+
+.bt-roi {
+    font-size: 0.85rem;
+    font-weight: 500;
+    margin-left: 0.3rem;
+}
+
+.bt-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1.2rem;
+    font-size: 0.9rem;
+}
+
+.bt-table th {
+    text-align: left;
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    padding: 0.5rem 0.6rem;
+    border-bottom: 1px solid var(--card-border);
+}
+
+.bt-table td {
+    padding: 0.55rem 0.6rem;
+    border-bottom: 1px solid var(--card-border);
+    color: var(--text-secondary);
+}
+
+.bt-table .num {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+}
+
+.bt-table tr.hit td {
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+.bt-table tr.hit td.num:last-child {
+    color: var(--success);
+}
+
+.bt-rule {
+    font-size: 0.8rem;
+}
+
+.bt-footnote {
+    margin-top: 1rem;
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+}
+
+@media (max-width: 480px) {
+    .card-header { flex-wrap: wrap; gap: 0.3rem; }
+    .bt-table { font-size: 0.85rem; }
+    .bt-table th, .bt-table td { padding: 0.5rem 0.3rem; }
+}

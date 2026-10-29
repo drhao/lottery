@@ -1,4 +1,136 @@
 {
+    "2026-01-29": {
+        "jackpot": 778800025.0,
+        "strategy": "Dynamic Cap-10 (800m Threshold)",
+        "threshold_met": false,
+        "recommended_tickets": 0,
+        "recommendations": [
+            {
+                "group": 1,
+                "numbers": "02 06 07 11 23 37",
+                "special": "06"
+            }
+        ],
+        "backfilled": true
+    },
+    "2026-02-02": {
+        "jackpot": 872951416.0,
+        "strategy": "Dynamic Cap-10 (800m Threshold)",
+        "threshold_met": true,
+        "recommended_tickets": 10,
+        "recommendations": [
+            {
+                "group": 1,
+                "numbers": "06 11 18 27 30 36",
+                "special": "08"
+            },
+            {
+                "group": 2,
+                "numbers": "03 05 12 20 28 31",
+                "special": "06"
+            },
+            {
+                "group": 3,
+                "numbers": "07 08 09 19 22 25",
+                "special": "07"
+            },
+            {
+                "group": 4,
+                "numbers": "02 16 25 33 36 37",
+                "special": "03"
+            },
+            {
+                "group": 5,
+                "numbers": "01 09 23 29 34 35",
+                "special": "04"
+            },
+            {
+                "group": 6,
+                "numbers": "04 13 15 24 27 34",
+                "special": "03"
+            },
+            {
+                "group": 7,
+                "numbers": "02 11 16 18 26 29",
+                "special": "01"
+            },
+            {
+                "group": 8,
+                "numbers": "10 14 23 24 35 38",
+                "special": "01"
+            },
+            {
+                "group": 9,
+                "numbers": "06 07 08 13 15 32",
+                "special": "05"
+            },
+            {
+                "group": 10,
+                "numbers": "05 06 17 21 24 31",
+                "special": "02"
+            }
+        ],
+        "backfilled": true
+    },
+    "2026-02-05": {
+        "jackpot": 988504396.0,
+        "strategy": "Dynamic Cap-10 (800m Threshold)",
+        "threshold_met": true,
+        "recommended_tickets": 10,
+        "recommendations": [
+            {
+                "group": 1,
+                "numbers": "02 11 16 34 35 37",
+                "special": "04"
+            },
+            {
+                "group": 2,
+                "numbers": "03 09 10 17 18 32",
+                "special": "05"
+            },
+            {
+                "group": 3,
+                "numbers": "06 07 08 17 24 26",
+                "special": "03"
+            },
+            {
+                "group": 4,
+                "numbers": "05 13 14 23 29 38",
+                "special": "01"
+            },
+            {
+                "group": 5,
+                "numbers": "12 15 19 20 27 30",
+                "special": "02"
+            },
+            {
+                "group": 6,
+                "numbers": "04 18 19 21 22 25",
+                "special": "07"
+            },
+            {
+                "group": 7,
+                "numbers": "01 10 21 27 28 31",
+                "special": "08"
+            },
+            {
+                "group": 8,
+                "numbers": "02 12 15 22 29 36",
+                "special": "06"
+            },
+            {
+                "group": 9,
+                "numbers": "08 18 25 26 29 33",
+                "special": "03"
+            },
+            {
+                "group": 10,
+                "numbers": "03 07 20 31 33 34",
+                "special": "01"
+            }
+        ],
+        "backfilled": true
+    },
     "2026-02-09": {
         "jackpot": 1155300715.0,
         "strategy": "Dynamic Cap-10 (800m Threshold)",
@@ -126,6 +258,1112 @@
                 "special": "03"
             }
         ]
+    },
+    "2026-03-02": {
+        "jackpot": 200000000.0,
+        "strategy": "Dynamic Cap-10 (800m Threshold)",
+        "threshold_met": false,
+        "recommended_tickets": 0,
+        "recommendations": [
+            {
+                "group": 1,
+                "numbers": "03 10 14 20 32 33",
+                "special": "01"
+            }
+        ],
+        "backfilled": true
+    },
+    "2026-03-05": {
+        "jackpot": 22888263.0,
+        "strategy": "Dynamic Cap-10 (800m Threshold)",
+        "threshold_met": false,
+        "recommended_tickets": 0,
+        "recommendations": [
+            {
+                "group": 1,
+                "numbers": "01 12 21 25 34 36",
+                "special": "02"
+            }
+        ],
+        "backfilled": true
+    },
+    "2026-03-09": {
+        "jackpot": 44647223.0,
+        "strategy": "Dynamic Cap-10 (800m Threshold)",
+        "threshold_met": false,
+        "recommended_tickets": 0,
+        "recommendations": [
+            {
+                "group": 1,
+                "numbers": "01 28 29 31 36 38",
+                "special": "01"
+            }
+        ],
+        "backfilled": true
+    },
+    "2026-03-12": {
+        "jackpot": 64033567.0,
+        "strategy": "Dynamic Cap-10 (800m Threshold)",
+        "threshold_met": false,
+        "recommended_tickets": 0,
+        "recommendations": [
+            {
+                "group": 1,
+                "numbers": "06 10 11 18 24 38",
+                "special": "04"
+            }
+        ],
+        "backfilled": true
+    },
+    "2026-03-16": {
+        "jackpot": 84982609.0,
+        "strategy": "Dynamic Cap-10 (800m Threshold)",
+        "threshold_met": false,
+        "recommended_tickets": 0,
+        "recommendations": [
+            {
+                "group": 1,
+                "numbers": "04 07 11 23 31 33",
+                "special": "05"
+            }
+        ],
+        "backfilled": true
+    },
+    "2026-03-19": {
+        "jackpot": 105270773.0,
+        "strategy": "Dynamic Cap-10 (800m Threshold)",
+        "threshold_met": false,
+        "recommended_tickets": 0,
+        "recommendations": [
+            {
+                "group": 1,
+                "numbers": "01 07 11 15 20 25",
+                "special": "05"
+            }
+        ],
+        "backfilled": true
+    },
+    "2026-03-23": {
+        "jackpot": 125252042.0,
+        "strategy": "Dynamic Cap-10 (800m Threshold)",
+        "threshold_met": false,
+        "recommended_tickets": 0,
+        "recommendations": [
+            {
+                "group": 1,
+                "numbers": "06 17 21 27 28 33",
+                "special": "07"
+            }
+        ],
+        "backfilled": true
+    },
+    "2026-03-26": {
+        "jackpot": 142935647.0,
+        "strategy": "Dynamic Cap-10 (800m Threshold)",
+        "threshold_met": false,
+        "recommended_tickets": 0,
+        "recommendations": [
+            {
+                "group": 1,
+                "numbers": "01 03 08 23 35 36",
+                "special": "04"
+            }
+        ],
+        "backfilled": true
+    },
+    "2026-03-30": {
+        "jackpot": 164369663.0,
+        "strategy": "Dynamic Cap-10 (800m Threshold)",
+        "threshold_met": false,
+        "recommended_tickets": 0,
+        "recommendations": [
+            {
+                "group": 1,
+                "numbers": "08 16 22 24 29 38",
+                "special": "06"
+            }
+        ],
+        "backfilled": true
+    },
+    "2026-04-02": {
+        "jackpot": 181645822.0,
+        "strategy": "Dynamic Cap-10 (800m Threshold)",
+        "threshold_met": false,
+        "recommended_tickets": 0,
+        "recommendations": [
+            {
+                "group": 1,
+                "numbers": "03 05 14 32 33 34",
+                "special": "08"
+            }
+        ],
+        "backfilled": true
+    },
+    "2026-04-06": {
+        "jackpot": 198279726.0,
+        "strategy": "Dynamic Cap-10 (800m Threshold)",
+        "threshold_met": false,
+        "recommended_tickets": 0,
+        "recommendations": [
+            {
+                "group": 1,
+                "numbers": "05 10 13 20 30 36",
+                "special": "05"
+            }
+        ],
+        "backfilled": true
+    },
+    "2026-04-09": {
+        "jackpot": 216459248.0,
+        "strategy": "Dynamic Cap-10 (800m Threshold)",
+        "threshold_met": false,
+        "recommended_tickets": 0,
+        "recommendations": [
+            {
+                "group": 1,
+                "numbers": "05 07 08 13 19 37",
+                "special": "05"
+            }
+        ],
+        "backfilled": true
+    },
+    "2026-04-13": {
+        "jackpot": 235213239.0,
+        "strategy": "Dynamic Cap-10 (800m Threshold)",
+        "threshold_met": false,
+        "recommended_tickets": 0,
+        "recommendations": [
+            {
+                "group": 1,
+                "numbers": "01 09 13 15 26 33",
+                "special": "04"
+            }
+        ],
+        "backfilled": true
+    },
+    "2026-04-16": {
+        "jackpot": 256213140.0,
+        "strategy": "Dynamic Cap-10 (800m Threshold)",
+        "threshold_met": false,
+        "recommended_tickets": 0,
+        "recommendations": [
+            {
+                "group": 1,
+                "numbers": "03 04 08 15 25 30",
+                "special": "01"
+            }
+        ],
+        "backfilled": true
+    },
+    "2026-04-20": {
+        "jackpot": 278232131.0,
+        "strategy": "Dynamic Cap-10 (800m Threshold)",
+        "threshold_met": false,
+        "recommended_tickets": 0,
+        "recommendations": [
+            {
+                "group": 1,
+                "numbers": "11 14 20 26 31 32",
+                "special": "03"
+            }
+        ],
+        "backfilled": true
+    },
+    "2026-04-23": {
+        "jackpot": 300008473.0,
+        "strategy": "Dynamic Cap-10 (800m Threshold)",
+        "threshold_met": false,
+        "recommended_tickets": 0,
+        "recommendations": [
+            {
+                "group": 1,
+                "numbers": "05 08 17 18 21 22",
+                "special": "05"
+            }
+        ],
+        "backfilled": true
+    },
+    "2026-04-27": {
+        "jackpot": 325235438.0,
+        "strategy": "Dynamic Cap-10 (800m Threshold)",
+        "threshold_met": false,
+        "recommended_tickets": 0,
+        "recommendations": [
+            {
+                "group": 1,
+                "numbers": "07 20 21 26 34 38",
+                "special": "05"
+            }
+        ],
+        "backfilled": true
+    },
+    "2026-04-30": {
+        "jackpot": 351872839.0,
+        "strategy": "Dynamic Cap-10 (800m Threshold)",
+        "threshold_met": false,
+        "recommended_tickets": 0,
+        "recommendations": [
+            {
+                "group": 1,
+                "numbers": "06 12 24 29 32 33",
+                "special": "01"
+            }
+        ],
+        "backfilled": true
+    },
+    "2026-05-04": {
+        "jackpot": 382565939.0,
+        "strategy": "Dynamic Cap-10 (800m Threshold)",
+        "threshold_met": false,
+        "recommended_tickets": 0,
+        "recommendations": [
+            {
+                "group": 1,
+                "numbers": "03 08 16 22 24 27",
+                "special": "03"
+            }
+        ],
+        "backfilled": true
+    },
+    "2026-05-07": {
+        "jackpot": 409339203.0,
+        "strategy": "Dynamic Cap-10 (800m Threshold)",
+        "threshold_met": false,
+        "recommended_tickets": 0,
+        "recommendations": [
+            {
+                "group": 1,
+                "numbers": "04 06 15 33 35 38",
+                "special": "03"
+            }
+        ],
+        "backfilled": true
+    },
+    "2026-05-11": {
+        "jackpot": 445124122.0,
+        "strategy": "Dynamic Cap-10 (800m Threshold)",
+        "threshold_met": false,
+        "recommended_tickets": 0,
+        "recommendations": [
+            {
+                "group": 1,
+                "numbers": "03 13 18 20 28 36",
+                "special": "01"
+            }
+        ],
+        "backfilled": true
+    },
+    "2026-05-14": {
+        "jackpot": 477775747.0,
+        "strategy": "Dynamic Cap-10 (800m Threshold)",
+        "threshold_met": false,
+        "recommended_tickets": 0,
+        "recommendations": [
+            {
+                "group": 1,
+                "numbers": "01 04 08 13 19 23",
+                "special": "06"
+            }
+        ],
+        "backfilled": true
+    },
+    "2026-05-18": {
+        "jackpot": 518797444.0,
+        "strategy": "Dynamic Cap-10 (800m Threshold)",
+        "threshold_met": false,
+        "recommended_tickets": 0,
+        "recommendations": [
+            {
+                "group": 1,
+                "numbers": "03 06 12 15 16 26",
+                "special": "02"
+            }
+        ],
+        "backfilled": true
+    },
+    "2026-05-21": {
+        "jackpot": 559971803.0,
+        "strategy": "Dynamic Cap-10 (800m Threshold)",
+        "threshold_met": false,
+        "recommended_tickets": 0,
+        "recommendations": [
+            {
+                "group": 1,
+                "numbers": "08 14 15 23 33 36",
+                "special": "05"
+            }
+        ],
+        "backfilled": true
+    },
+    "2026-05-25": {
+        "jackpot": 605923691.0,
+        "strategy": "Dynamic Cap-10 (800m Threshold)",
+        "threshold_met": false,
+        "recommended_tickets": 0,
+        "recommendations": [
+            {
+                "group": 1,
+                "numbers": "06 07 08 12 20 37",
+                "special": "08"
+            }
+        ],
+        "backfilled": true
+    },
+    "2026-05-28": {
+        "jackpot": 655962298.0,
+        "strategy": "Dynamic Cap-10 (800m Threshold)",
+        "threshold_met": false,
+        "recommended_tickets": 0,
+        "recommendations": [
+            {
+                "group": 1,
+                "numbers": "05 06 07 12 23 26",
+                "special": "05"
+            }
+        ],
+        "backfilled": true
+    },
+    "2026-06-01": {
+        "jackpot": 712601030.0,
+        "strategy": "Dynamic Cap-10 (800m Threshold)",
+        "threshold_met": false,
+        "recommended_tickets": 0,
+        "recommendations": [
+            {
+                "group": 1,
+                "numbers": "01 20 21 27 29 38",
+                "special": "08"
+            }
+        ],
+        "backfilled": true
+    },
+    "2026-06-04": {
+        "jackpot": 767533151.0,
+        "strategy": "Dynamic Cap-10 (800m Threshold)",
+        "threshold_met": false,
+        "recommended_tickets": 0,
+        "recommendations": [
+            {
+                "group": 1,
+                "numbers": "05 18 21 22 31 37",
+                "special": "01"
+            }
+        ],
+        "backfilled": true
+    },
+    "2026-06-08": {
+        "jackpot": 822334264.0,
+        "strategy": "Dynamic Cap-10 (800m Threshold)",
+        "threshold_met": true,
+        "recommended_tickets": 10,
+        "recommendations": [
+            {
+                "group": 1,
+                "numbers": "07 12 14 19 24 33",
+                "special": "06"
+            },
+            {
+                "group": 2,
+                "numbers": "03 08 09 10 16 29",
+                "special": "04"
+            },
+            {
+                "group": 3,
+                "numbers": "11 15 21 22 34 37",
+                "special": "01"
+            },
+            {
+                "group": 4,
+                "numbers": "13 26 27 30 31 38",
+                "special": "04"
+            },
+            {
+                "group": 5,
+                "numbers": "01 13 18 24 35 36",
+                "special": "03"
+            },
+            {
+                "group": 6,
+                "numbers": "02 06 19 25 36 38",
+                "special": "07"
+            },
+            {
+                "group": 7,
+                "numbers": "03 08 20 28 31 34",
+                "special": "05"
+            },
+            {
+                "group": 8,
+                "numbers": "12 14 23 28 32 37",
+                "special": "02"
+            },
+            {
+                "group": 9,
+                "numbers": "01 05 07 17 21 35",
+                "special": "06"
+            },
+            {
+                "group": 10,
+                "numbers": "07 15 18 25 28 37",
+                "special": "08"
+            }
+        ],
+        "backfilled": true
+    },
+    "2026-06-11": {
+        "jackpot": 887805240.0,
+        "strategy": "Dynamic Cap-10 (800m Threshold)",
+        "threshold_met": true,
+        "recommended_tickets": 10,
+        "recommendations": [
+            {
+                "group": 1,
+                "numbers": "05 13 22 23 24 26",
+                "special": "03"
+            },
+            {
+                "group": 2,
+                "numbers": "02 03 05 10 27 29",
+                "special": "01"
+            },
+            {
+                "group": 3,
+                "numbers": "01 13 16 17 23 38",
+                "special": "08"
+            },
+            {
+                "group": 4,
+                "numbers": "03 07 14 21 30 32",
+                "special": "06"
+            },
+            {
+                "group": 5,
+                "numbers": "08 18 20 31 32 36",
+                "special": "05"
+            },
+            {
+                "group": 6,
+                "numbers": "02 06 09 15 33 37",
+                "special": "02"
+            },
+            {
+                "group": 7,
+                "numbers": "03 11 12 21 25 28",
+                "special": "04"
+            },
+            {
+                "group": 8,
+                "numbers": "04 12 19 29 31 35",
+                "special": "01"
+            },
+            {
+                "group": 9,
+                "numbers": "15 20 27 33 34 38",
+                "special": "07"
+            },
+            {
+                "group": 10,
+                "numbers": "01 02 10 14 26 34",
+                "special": "02"
+            }
+        ],
+        "backfilled": true
+    },
+    "2026-06-15": {
+        "jackpot": 958313870.0,
+        "strategy": "Dynamic Cap-10 (800m Threshold)",
+        "threshold_met": true,
+        "recommended_tickets": 10,
+        "recommendations": [
+            {
+                "group": 1,
+                "numbers": "05 17 29 32 33 36",
+                "special": "07"
+            },
+            {
+                "group": 2,
+                "numbers": "04 05 15 20 30 37",
+                "special": "05"
+            },
+            {
+                "group": 3,
+                "numbers": "16 18 19 27 28 35",
+                "special": "04"
+            },
+            {
+                "group": 4,
+                "numbers": "16 21 23 25 31 38",
+                "special": "03"
+            },
+            {
+                "group": 5,
+                "numbers": "06 10 11 14 34 36",
+                "special": "08"
+            },
+            {
+                "group": 6,
+                "numbers": "01 06 08 22 24 28",
+                "special": "02"
+            },
+            {
+                "group": 7,
+                "numbers": "07 09 12 20 22 32",
+                "special": "06"
+            },
+            {
+                "group": 8,
+                "numbers": "07 10 13 23 25 26",
+                "special": "03"
+            },
+            {
+                "group": 9,
+                "numbers": "01 03 11 26 27 37",
+                "special": "05"
+            },
+            {
+                "group": 10,
+                "numbers": "02 03 18 21 31 34",
+                "special": "04"
+            }
+        ],
+        "backfilled": true
+    },
+    "2026-06-18": {
+        "jackpot": 1038715450.0,
+        "strategy": "Dynamic Cap-10 (800m Threshold)",
+        "threshold_met": true,
+        "recommended_tickets": 2,
+        "recommendations": [
+            {
+                "group": 1,
+                "numbers": "01 03 08 32 34 35",
+                "special": "08"
+            },
+            {
+                "group": 2,
+                "numbers": "02 08 10 12 20 23",
+                "special": "08"
+            }
+        ],
+        "backfilled": true
+    },
+    "2026-06-22": {
+        "jackpot": 20124493.0,
+        "strategy": "Dynamic Cap-10 (800m Threshold)",
+        "threshold_met": false,
+        "recommended_tickets": 0,
+        "recommendations": [
+            {
+                "group": 1,
+                "numbers": "03 08 09 14 20 31",
+                "special": "05"
+            }
+        ],
+        "backfilled": true
+    },
+    "2026-06-25": {
+        "jackpot": 35605833.0,
+        "strategy": "Dynamic Cap-10 (800m Threshold)",
+        "threshold_met": false,
+        "recommended_tickets": 0,
+        "recommendations": [
+            {
+                "group": 1,
+                "numbers": "09 11 15 24 26 35",
+                "special": "02"
+            }
+        ],
+        "backfilled": true
+    },
+    "2026-06-29": {
+        "jackpot": 51321533.0,
+        "strategy": "Dynamic Cap-10 (800m Threshold)",
+        "threshold_met": false,
+        "recommended_tickets": 0,
+        "recommendations": [
+            {
+                "group": 1,
+                "numbers": "17 19 20 21 31 36",
+                "special": "01"
+            }
+        ],
+        "backfilled": true
+    },
+    "2026-07-02": {
+        "jackpot": 67177710.0,
+        "strategy": "Dynamic Cap-10 (800m Threshold)",
+        "threshold_met": false,
+        "recommended_tickets": 0,
+        "recommendations": [
+            {
+                "group": 1,
+                "numbers": "01 22 23 25 32 38",
+                "special": "07"
+            }
+        ],
+        "backfilled": true
+    },
+    "2026-07-06": {
+        "jackpot": 83976620.0,
+        "strategy": "Dynamic Cap-10 (800m Threshold)",
+        "threshold_met": false,
+        "recommended_tickets": 0,
+        "recommendations": [
+            {
+                "group": 1,
+                "numbers": "01 08 15 25 26 30",
+                "special": "07"
+            }
+        ],
+        "backfilled": true
+    },
+    "2026-07-09": {
+        "jackpot": 100611151.0,
+        "strategy": "Dynamic Cap-10 (800m Threshold)",
+        "threshold_met": false,
+        "recommended_tickets": 0,
+        "recommendations": [
+            {
+                "group": 1,
+                "numbers": "03 13 15 17 26 28",
+                "special": "01"
+            }
+        ],
+        "backfilled": true
+    },
+    "2026-07-13": {
+        "jackpot": 115589619.0,
+        "strategy": "Dynamic Cap-10 (800m Threshold)",
+        "threshold_met": false,
+        "recommended_tickets": 0,
+        "recommendations": [
+            {
+                "group": 1,
+                "numbers": "03 12 21 23 24 31",
+                "special": "05"
+            }
+        ],
+        "backfilled": true
+    },
+    "2026-07-16": {
+        "jackpot": 130531766.0,
+        "strategy": "Dynamic Cap-10 (800m Threshold)",
+        "threshold_met": false,
+        "recommended_tickets": 0,
+        "recommendations": [
+            {
+                "group": 1,
+                "numbers": "20 24 25 26 29 35",
+                "special": "01"
+            }
+        ],
+        "backfilled": true
+    },
+    "2026-07-20": {
+        "jackpot": 146048110.0,
+        "strategy": "Dynamic Cap-10 (800m Threshold)",
+        "threshold_met": false,
+        "recommended_tickets": 0,
+        "recommendations": [
+            {
+                "group": 1,
+                "numbers": "06 07 17 26 31 34",
+                "special": "03"
+            }
+        ],
+        "backfilled": true
+    },
+    "2026-07-23": {
+        "jackpot": 161671517.0,
+        "strategy": "Dynamic Cap-10 (800m Threshold)",
+        "threshold_met": false,
+        "recommended_tickets": 0,
+        "recommendations": [
+            {
+                "group": 1,
+                "numbers": "04 06 09 23 27 33",
+                "special": "01"
+            }
+        ],
+        "backfilled": true
+    },
+    "2026-07-27": {
+        "jackpot": 177950418.0,
+        "strategy": "Dynamic Cap-10 (800m Threshold)",
+        "threshold_met": false,
+        "recommended_tickets": 0,
+        "recommendations": [
+            {
+                "group": 1,
+                "numbers": "01 07 10 21 32 34",
+                "special": "04"
+            }
+        ],
+        "backfilled": true
+    },
+    "2026-07-30": {
+        "jackpot": 193503274.0,
+        "strategy": "Dynamic Cap-10 (800m Threshold)",
+        "threshold_met": false,
+        "recommended_tickets": 0,
+        "recommendations": [
+            {
+                "group": 1,
+                "numbers": "04 10 19 20 21 23",
+                "special": "07"
+            }
+        ],
+        "backfilled": true
+    },
+    "2026-08-03": {
+        "jackpot": 211109765.0,
+        "strategy": "Dynamic Cap-10 (800m Threshold)",
+        "threshold_met": false,
+        "recommended_tickets": 0,
+        "recommendations": [
+            {
+                "group": 1,
+                "numbers": "04 06 25 27 28 29",
+                "special": "06"
+            }
+        ],
+        "backfilled": true
+    },
+    "2026-08-06": {
+        "jackpot": 228056459.0,
+        "strategy": "Dynamic Cap-10 (800m Threshold)",
+        "threshold_met": false,
+        "recommended_tickets": 0,
+        "recommendations": [
+            {
+                "group": 1,
+                "numbers": "01 03 23 29 36 38",
+                "special": "01"
+            }
+        ],
+        "backfilled": true
+    },
+    "2026-08-10": {
+        "jackpot": 246330673.0,
+        "strategy": "Dynamic Cap-10 (800m Threshold)",
+        "threshold_met": false,
+        "recommended_tickets": 0,
+        "recommendations": [
+            {
+                "group": 1,
+                "numbers": "17 24 28 31 35 38",
+                "special": "03"
+            }
+        ],
+        "backfilled": true
+    },
+    "2026-08-13": {
+        "jackpot": 264353551.0,
+        "strategy": "Dynamic Cap-10 (800m Threshold)",
+        "threshold_met": false,
+        "recommended_tickets": 0,
+        "recommendations": [
+            {
+                "group": 1,
+                "numbers": "07 14 23 27 28 30",
+                "special": "02"
+            }
+        ],
+        "backfilled": true
+    },
+    "2026-08-17": {
+        "jackpot": 282799570.0,
+        "strategy": "Dynamic Cap-10 (800m Threshold)",
+        "threshold_met": false,
+        "recommended_tickets": 0,
+        "recommendations": [
+            {
+                "group": 1,
+                "numbers": "05 13 18 31 36 37",
+                "special": "07"
+            }
+        ],
+        "backfilled": true
+    },
+    "2026-08-20": {
+        "jackpot": 300523621.0,
+        "strategy": "Dynamic Cap-10 (800m Threshold)",
+        "threshold_met": false,
+        "recommended_tickets": 0,
+        "recommendations": [
+            {
+                "group": 1,
+                "numbers": "09 23 25 27 29 32",
+                "special": "03"
+            }
+        ],
+        "backfilled": true
+    },
+    "2026-08-24": {
+        "jackpot": 319802743.0,
+        "strategy": "Dynamic Cap-10 (800m Threshold)",
+        "threshold_met": false,
+        "recommended_tickets": 0,
+        "recommendations": [
+            {
+                "group": 1,
+                "numbers": "12 25 26 29 32 33",
+                "special": "08"
+            }
+        ],
+        "backfilled": true
+    },
+    "2026-08-27": {
+        "jackpot": 340182301.0,
+        "strategy": "Dynamic Cap-10 (800m Threshold)",
+        "threshold_met": false,
+        "recommended_tickets": 0,
+        "recommendations": [
+            {
+                "group": 1,
+                "numbers": "05 10 24 25 28 29",
+                "special": "04"
+            }
+        ],
+        "backfilled": true
+    },
+    "2026-08-31": {
+        "jackpot": 362673904.0,
+        "strategy": "Dynamic Cap-10 (800m Threshold)",
+        "threshold_met": false,
+        "recommended_tickets": 0,
+        "recommendations": [
+            {
+                "group": 1,
+                "numbers": "01 02 14 20 24 33",
+                "special": "01"
+            }
+        ],
+        "backfilled": true
+    },
+    "2026-09-03": {
+        "jackpot": 384834632.0,
+        "strategy": "Dynamic Cap-10 (800m Threshold)",
+        "threshold_met": false,
+        "recommended_tickets": 0,
+        "recommendations": [
+            {
+                "group": 1,
+                "numbers": "02 04 23 24 26 35",
+                "special": "05"
+            }
+        ],
+        "backfilled": true
+    },
+    "2026-09-07": {
+        "jackpot": 410236736.0,
+        "strategy": "Dynamic Cap-10 (800m Threshold)",
+        "threshold_met": false,
+        "recommended_tickets": 0,
+        "recommendations": [
+            {
+                "group": 1,
+                "numbers": "13 17 23 27 30 37",
+                "special": "05"
+            }
+        ],
+        "backfilled": true
+    },
+    "2026-09-10": {
+        "jackpot": 200000000.0,
+        "strategy": "Dynamic Cap-10 (800m Threshold)",
+        "threshold_met": false,
+        "recommended_tickets": 0,
+        "recommendations": [
+            {
+                "group": 1,
+                "numbers": "08 09 20 23 32 38",
+                "special": "05"
+            }
+        ],
+        "backfilled": true
+    },
+    "2026-09-14": {
+        "jackpot": 17053614.0,
+        "strategy": "Dynamic Cap-10 (800m Threshold)",
+        "threshold_met": false,
+        "recommended_tickets": 0,
+        "recommendations": [
+            {
+                "group": 1,
+                "numbers": "03 12 15 31 34 37",
+                "special": "06"
+            }
+        ],
+        "backfilled": true
+    },
+    "2026-09-17": {
+        "jackpot": 33505335.0,
+        "strategy": "Dynamic Cap-10 (800m Threshold)",
+        "threshold_met": false,
+        "recommended_tickets": 0,
+        "recommendations": [
+            {
+                "group": 1,
+                "numbers": "03 16 19 25 34 38",
+                "special": "03"
+            }
+        ],
+        "backfilled": true
+    },
+    "2026-09-21": {
+        "jackpot": 49554567.0,
+        "strategy": "Dynamic Cap-10 (800m Threshold)",
+        "threshold_met": false,
+        "recommended_tickets": 0,
+        "recommendations": [
+            {
+                "group": 1,
+                "numbers": "05 17 20 24 28 31",
+                "special": "08"
+            }
+        ],
+        "backfilled": true
+    },
+    "2026-09-24": {
+        "jackpot": 67648124.0,
+        "strategy": "Dynamic Cap-10 (800m Threshold)",
+        "threshold_met": false,
+        "recommended_tickets": 0,
+        "recommendations": [
+            {
+                "group": 1,
+                "numbers": "03 08 10 11 26 29",
+                "special": "08"
+            }
+        ],
+        "backfilled": true
+    },
+    "2026-09-28": {
+        "jackpot": 85552302.0,
+        "strategy": "Dynamic Cap-10 (800m Threshold)",
+        "threshold_met": false,
+        "recommended_tickets": 0,
+        "recommendations": [
+            {
+                "group": 1,
+                "numbers": "03 09 10 21 31 34",
+                "special": "05"
+            }
+        ],
+        "backfilled": true
+    },
+    "2026-10-01": {
+        "jackpot": 103035301.0,
+        "strategy": "Dynamic Cap-10 (800m Threshold)",
+        "threshold_met": false,
+        "recommended_tickets": 0,
+        "recommendations": [
+            {
+                "group": 1,
+                "numbers": "12 14 21 28 31 32",
+                "special": "08"
+            }
+        ],
+        "backfilled": true
+    },
+    "2026-10-05": {
+        "jackpot": 120067333.0,
+        "strategy": "Dynamic Cap-10 (800m Threshold)",
+        "threshold_met": false,
+        "recommended_tickets": 0,
+        "recommendations": [
+            {
+                "group": 1,
+                "numbers": "07 08 14 15 21 24",
+                "special": "06"
+            }
+        ],
+        "backfilled": true
+    },
+    "2026-10-08": {
+        "jackpot": 135222235.0,
+        "strategy": "Dynamic Cap-10 (800m Threshold)",
+        "threshold_met": false,
+        "recommended_tickets": 0,
+        "recommendations": [
+            {
+                "group": 1,
+                "numbers": "01 12 22 28 29 34",
+                "special": "01"
+            }
+        ],
+        "backfilled": true
+    },
+    "2026-10-12": {
+        "jackpot": 152152700.0,
+        "strategy": "Dynamic Cap-10 (800m Threshold)",
+        "threshold_met": false,
+        "recommended_tickets": 0,
+        "recommendations": [
+            {
+                "group": 1,
+                "numbers": "04 09 14 22 32 37",
+                "special": "01"
+            }
+        ],
+        "backfilled": true
+    },
+    "2026-10-15": {
+        "jackpot": 167221334.0,
+        "strategy": "Dynamic Cap-10 (800m Threshold)",
+        "threshold_met": false,
+        "recommended_tickets": 0,
+        "recommendations": [
+            {
+                "group": 1,
+                "numbers": "03 04 10 23 27 30",
+                "special": "04"
+            }
+        ],
+        "backfilled": true
+    },
+    "2026-10-19": {
+        "jackpot": 183223965.0,
+        "strategy": "Dynamic Cap-10 (800m Threshold)",
+        "threshold_met": false,
+        "recommended_tickets": 0,
+        "recommendations": [
+            {
+                "group": 1,
+                "numbers": "03 18 19 22 28 38",
+                "special": "04"
+            }
+        ],
+        "backfilled": true
+    },
+    "2026-10-22": {
+        "jackpot": 199123561.0,
+        "strategy": "Dynamic Cap-10 (800m Threshold)",
+        "threshold_met": false,
+        "recommended_tickets": 0,
+        "recommendations": [
+            {
+                "group": 1,
+                "numbers": "11 12 18 21 30 36",
+                "special": "03"
+            }
+        ],
+        "backfilled": true
+    },
+    "2026-10-26": {
+        "jackpot": 215017505.0,
+        "strategy": "Dynamic Cap-10 (800m Threshold)",
+        "threshold_met": false,
+        "recommended_tickets": 0,
+        "recommendations": [
+            {
+                "group": 1,
+                "numbers": "03 06 08 13 16 32",
+                "special": "03"
+            }
+        ],
+        "backfilled": true
     },
     "2026-10-29": {
         "jackpot": 232515670.0,
