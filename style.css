@@ -399,6 +399,33 @@ footer {
     }
 }
 
+/* Jackpot Strategy */
+.strategy-badge {
+    font-size: 0.8rem;
+    font-weight: 600;
+    padding: 0.2rem 0.6rem;
+    border-radius: 999px;
+}
+
+.strategy-badge.go {
+    background: #dcfce7;
+    color: #15803d;
+}
+
+.strategy-badge.wait {
+    background: var(--bg-color);
+    color: var(--text-secondary);
+    border: 1px solid var(--card-border);
+}
+
+.strategy-numbers {
+    margin-top: 1rem;
+}
+
+.strategy-numbers .balls-container {
+    flex-wrap: wrap;
+}
+
 /* Backtest */
 .bt-note {
     font-size: 0.8rem;

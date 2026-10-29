@@ -26,6 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
     fetchAndParseText(RAW_GITHUB_URL_LOTTO, 'lotto649-dashboard', '大樂透');
     fetchAndParseText(RAW_GITHUB_URL_SUPER, 'superlotto-dashboard', '威力彩');
 
+    renderJackpotStrategy('recommendation_lotto649_jackpot_history.json', 'lotto649-jackpot');
     renderBacktest(BACKTEST_CONFIG.lotto649, 'lotto649-backtest');
     renderBacktest(BACKTEST_CONFIG.superlotto, 'superlotto-backtest');
 });
@@ -357,4 +358,63 @@ function buildBacktestHtml(cfg, rows) {
             </table>
             <p class="bt-footnote">假設自 ${BACKTEST_START.slice(0, 7)} 起每期照推薦號碼全數投注。其中 ${backfilledCount} 期當時未留下推薦紀錄，以相同推薦邏輯、僅用當期之前的資料回補。浮動獎項若該期無人中獎，以獨得整個獎池計算；固定獎項依官方獎金。</p>
         </div>`;
+}
+
+// ===== 大樂透 頭獎門檻策略（≥3 億 + 避開熱門號碼）=====
+async function renderJackpotStrategy(url, targetId) {
+    const container = document.getElementById(targetId);
+    try {
+        const history = await fetch(url, { cache: 'no-store' }).then(r => r.json());
+        const date = Object.keys(history).sort().pop();
+        const rec = history[date];
+        const tickets = combCount(rec.pack_size, 6);
+        const action = rec.threshold_met
+            ? `包牌 ${rec.pack_size} 碼 = ${tickets} 注 (${fmtMoney(tickets * 50)})`
+            : '本期不買';
+        const balls = rec.numbers.map(n => `<div class="ball cold">${String(n).padStart(2, '0')}</div>`).join('');
+
+        container.innerHTML = `
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">🎯 頭獎門檻策略（≥${rec.threshold / 1e8} 億＋避開熱門）</div>
+                    <div class="strategy-badge ${rec.threshold_met ? 'go' : 'wait'}">${rec.threshold_met ? '✅ 已達門檻' : '⛔ 未達門檻'}</div>
+                </div>
+                <div class="info-grid">
+                    <div class="stat-box">
+                        <div class="stat-label">預估下期頭獎</div>
+                        <div class="stat-value ${rec.threshold_met ? 'accent' : ''}">${fmtMoney(rec.jackpot_est)}</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">投注門檻</div>
+                        <div class="stat-value">${fmtMoney(rec.threshold)}</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">本期建議</div>
+                        <div class="stat-value">${action}</div>
+                    </div>
+                </div>
+                <div class="number-groups strategy-numbers">
+                    <div class="number-row">
+                        <div class="row-label">包牌號碼</div>
+                        <div class="balls-container">${balls}</div>
+                    </div>
+                </div>
+                <p class="bt-footnote">
+                    ${rec.threshold_met
+                        ? `在選號單勾選包牌，填入上面 ${rec.pack_size} 個號碼，即為全部 ${tickets} 注組合。`
+                        : `未達門檻時預算保留給頭獎更大的期數；以上為參考號碼，達標時以包牌 ${rec.pack_size} 碼投注（${tickets} 注）。`}
+                    年預算 ${fmtMoney(rec.annual_budget)}，平均熱門度 ${rec.popularity.toFixed(2)}（隨機選號 = 1.00，越低越不容易與人平分頭獎）。
+                    2019 起回測每 $1 期望拿回約 0.80（電腦選號 0.77、每期都買 0.49）；中頭獎機率只取決於注數，選號不會提高中獎率。
+                </p>
+            </div>`;
+    } catch (e) {
+        console.error('Jackpot strategy failed:', e);
+        container.innerHTML = '';
+    }
+}
+
+function combCount(n, k) {
+    let r = 1;
+    for (let i = 0; i < k; i++) r = r * (n - i) / (i + 1);
+    return Math.round(r);
 }

@@ -10,6 +10,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CSV_649 = os.path.join(BASE_DIR, 'data', 'lotto649_results.csv')
 SCRAPER_649 = os.path.join(BASE_DIR, 'src', 'scrape_lotto649.py')
 REC_649 = os.path.join(BASE_DIR, 'src', 'recommend_lotto649.py')
+REC_649_JACKPOT = os.path.join(BASE_DIR, 'src', 'recommend_lotto649_jackpot.py')
 
 # Paths - Super Lotto (威力彩)
 CSV_SUPER = os.path.join(BASE_DIR, 'data', 'super_lotto638_results.csv')
@@ -34,7 +35,7 @@ def get_latest_info(csv_path, date_col='Date', period_col='Period'):
         print(f"Error reading CSV {os.path.basename(csv_path)}: {e}")
         return None, None
 
-def check_and_update(name, csv_path, scraper_path, rec_path):
+def check_and_update(name, csv_path, scraper_path, rec_paths):
     print(f"\n--- Checking {name} ---")
     
     # 1. Get current latest
@@ -66,11 +67,12 @@ def check_and_update(name, csv_path, scraper_path, rec_path):
         
     if needs_update:
         print(f"Updating Recommendations for {name}...")
-        try:
-            subprocess.run(["python3", rec_path], check=True)
-            print(f"SUCCESS: {name} recommendations updated.")
-        except subprocess.CalledProcessError as e:
-            print(f"Error running recommendation script: {e}")
+        for rec_path in rec_paths:
+            try:
+                subprocess.run(["python3", rec_path], check=True)
+                print(f"SUCCESS: {os.path.basename(rec_path)} updated.")
+            except subprocess.CalledProcessError as e:
+                print(f"Error running recommendation script {os.path.basename(rec_path)}: {e}")
     else:
         print(f"{name} recommendations are up to date.")
 
@@ -80,10 +82,10 @@ def main():
     print("========================================")
     
     # Check Lotto 6/49
-    check_and_update("Lotto 6/49", CSV_649, SCRAPER_649, REC_649)
+    check_and_update("Lotto 6/49", CSV_649, SCRAPER_649, [REC_649, REC_649_JACKPOT])
     
     # Check Super Lotto
-    check_and_update("Super Lotto (威力彩)", CSV_SUPER, SCRAPER_SUPER, REC_SUPER)
+    check_and_update("Super Lotto (威力彩)", CSV_SUPER, SCRAPER_SUPER, [REC_SUPER])
     
     print("\n========================================")
     print("   All Checks Completed")
