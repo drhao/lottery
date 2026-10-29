@@ -8,7 +8,7 @@ def scrape_super_lotto_638():
     params = {
         "period": "",
         "month": "2008-01",
-        "endMonth": "2026-02",
+        "endMonth": datetime.now().strftime("%Y-%m"),
         "pageNum": "1",
         "pageSize": "5000"  # Request a large page size to get all data at once
     }

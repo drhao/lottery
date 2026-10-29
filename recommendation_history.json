@@ -57,7 +57,6 @@
             }
         ]
     },
-
     "2026-02-12": {
         "jackpot": 1355740694.0,
         "strategy": "Dynamic Cap-10 (800m Threshold)",
@@ -89,7 +88,6 @@
             }
         ]
     },
-
     "2026-02-19": {
         "jackpot": 76193126.0,
         "strategy": "Dynamic Cap-10 (800m Threshold)",
@@ -126,6 +124,19 @@
                 "group": 1,
                 "numbers": "01 02 04 17 21 25",
                 "special": "03"
+            }
+        ]
+    },
+    "2026-10-29": {
+        "jackpot": 232515670.0,
+        "strategy": "Dynamic Cap-10 (800m Threshold)",
+        "threshold_met": false,
+        "recommended_tickets": 0,
+        "recommendations": [
+            {
+                "group": 1,
+                "numbers": "02 07 11 32 35 37",
+                "special": "07"
             }
         ]
     }
