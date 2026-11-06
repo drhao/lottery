@@ -58,5 +58,25 @@
             47
         ],
         "popularity": 0.636
+    },
+    "2026-11-06": {
+        "jackpot_est": 24756954.0,
+        "threshold": 300000000,
+        "threshold_met": false,
+        "annual_budget": 20000,
+        "pack_size": 8,
+        "recommended_tickets": 0,
+        "cost": 0,
+        "numbers": [
+            17,
+            31,
+            39,
+            41,
+            43,
+            44,
+            45,
+            46
+        ],
+        "popularity": 0.641
     }
 }
